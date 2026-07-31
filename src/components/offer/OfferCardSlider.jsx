@@ -10,14 +10,19 @@ import ProductCard from "@components/product/ProductCard";
  * Horizontal, slow-autoplay carousel of the SAME product card used in every
  * other homepage row (Best Sellers, New Arrivals, Flash Sale, Category
  * Deals — see ProductRowSection.jsx), for the "Latest Offers" slot beside
- * the hero banner. slidesPerView="auto" + a fixed 170px/200px slide width
- * matches ProductRowSection's own card width exactly, rather than
- * stretching cards to fill the container.
+ * the hero banner.
+ *
+ * slidesPerView={2} (a fixed number, not "auto") — Swiper divides the
+ * MEASURED container width by 2, so the track can never be wider than the
+ * container, unlike slidesPerView="auto" which sizes the track by summing
+ * every slide's natural width and blew out past the container edge. Each
+ * card is then centered at its normal 170px/200px width inside its slide
+ * (matching ProductRowSection's width) rather than stretched to fill it.
  */
 const OfferCardSlider = ({ products, attributes }) => {
   return (
     <Swiper
-      slidesPerView="auto"
+      slidesPerView={2}
       spaceBetween={8}
       loop={products.length > 2}
       autoplay={{
@@ -30,8 +35,13 @@ const OfferCardSlider = ({ products, attributes }) => {
       className="h-full w-full"
     >
       {products.map((product) => (
-        <SwiperSlide key={product._id} className="!w-[170px] sm:!w-[200px] h-full">
-          <ProductCard product={product} attributes={attributes} />
+        <SwiperSlide
+          key={product._id}
+          className="h-full flex items-stretch justify-center"
+        >
+          <div className="w-[170px] sm:w-[200px] max-w-full h-full mx-auto">
+            <ProductCard product={product} attributes={attributes} />
+          </div>
         </SwiperSlide>
       ))}
     </Swiper>
