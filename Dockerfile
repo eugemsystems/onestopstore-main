@@ -32,6 +32,12 @@ ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL \
 # next build automatically sets NODE_ENV=production and loads .env.production
 RUN npm run build
 
+# mkcert-rootCA.pem is a developer's local mkcert CA, not committed to git —
+# only present on machines that have generated one for local HTTPS dev. Make
+# sure a (possibly empty) file exists so the COPY below never fails a
+# server/CI build that doesn't have one.
+RUN touch mkcert-rootCA.pem
+
 # 2. Production stage
 FROM node:22-alpine
 WORKDIR /app
