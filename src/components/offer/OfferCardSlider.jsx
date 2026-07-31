@@ -4,18 +4,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-import OfferProductCard from "@components/offer/OfferProductCard";
+import ProductCard from "@components/product/ProductCard";
 
 /**
- * Horizontal, slow-autoplay carousel of compact product cards for the
- * "Latest Offers" slot beside the hero banner, sliding the same way
- * MainCarousel's hero slides do. Cards use `slidesPerView="auto"` with a
- * fixed width (170px / 200px) matching the card width used in every other
- * horizontal product row on the homepage (see ProductRowSection.jsx) —
- * NOT stretched to fill the container, which is what made them look
- * oversized before.
+ * Horizontal, slow-autoplay carousel of the SAME product card used in every
+ * other homepage row (Best Sellers, New Arrivals, Flash Sale, Category
+ * Deals — see ProductRowSection.jsx), for the "Latest Offers" slot beside
+ * the hero banner. slidesPerView="auto" + a fixed 170px/200px slide width
+ * matches ProductRowSection's own card width exactly, rather than
+ * stretching cards to fill the container.
  */
-const OfferCardSlider = ({ products }) => {
+const OfferCardSlider = ({ products, attributes }) => {
   return (
     <Swiper
       slidesPerView="auto"
@@ -32,7 +31,7 @@ const OfferCardSlider = ({ products }) => {
     >
       {products.map((product) => (
         <SwiperSlide key={product._id} className="!w-[170px] sm:!w-[200px] h-full">
-          <OfferProductCard product={product} />
+          <ProductCard product={product} attributes={attributes} />
         </SwiperSlide>
       ))}
     </Swiper>
