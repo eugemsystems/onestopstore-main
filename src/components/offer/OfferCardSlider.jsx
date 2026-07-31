@@ -4,19 +4,18 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-import DiscountedCard from "@components/product/DiscountedCard";
+import OfferProductCard from "@components/offer/OfferProductCard";
 
 /**
- * Horizontal, slow-autoplay carousel of full product cards for the "Latest
- * Offers" slot beside the hero banner — same DiscountedCard used in the
- * "Latest Deals" grid further down the page, two at a time, sliding the
+ * Horizontal, slow-autoplay carousel of compact product cards for the
+ * "Latest Offers" slot beside the hero banner — two at a time, sliding the
  * same way MainCarousel's hero slides do.
  */
-const OfferCardSlider = ({ products, attributes }) => {
+const OfferCardSlider = ({ products }) => {
   return (
     <Swiper
       slidesPerView={2}
-      spaceBetween={12}
+      spaceBetween={8}
       loop={products.length > 2}
       autoplay={{
         delay: 3500,
@@ -29,7 +28,7 @@ const OfferCardSlider = ({ products, attributes }) => {
     >
       {products.map((product) => (
         <SwiperSlide key={product._id} className="h-full">
-          <DiscountedCard product={product} attributes={attributes} />
+          <OfferProductCard product={product} />
         </SwiperSlide>
       ))}
     </Swiper>

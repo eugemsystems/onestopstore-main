@@ -12,11 +12,11 @@ import OfferCardSlider from "@components/offer/OfferCardSlider";
  * on-sale products instead, which is both real data and a better fit for
  * "offers" than an empty coupon widget.
  *
- * Renders full product cards (same DiscountedCard used in the "Latest
- * Deals" grid) one at a time in a slow vertical auto-scroll, matching the
- * hero carousel's own auto-advancing feel.
+ * Renders compact product cards (thumbnail + name + price — see
+ * OfferProductCard) two at a time in a slow horizontal auto-scroll,
+ * matching the hero carousel's own auto-advancing feel.
  */
-const OfferCard = async ({ attributes }) => {
+const OfferCard = async () => {
   const cookieStore = await cookies();
   const lang = cookieStore.get("_lang")?.value || "en";
   const showingTranslateValue = (data) => {
@@ -28,15 +28,23 @@ const OfferCard = async ({ attributes }) => {
   const { storeCustomizationSetting, error } =
     await getStoreCustomizationSetting();
 
-  const { products } = await searchProducts({ onSale: true, limit: 6, sort: "newest" });
+  const { products: rawProducts } = await searchProducts({
+    onSale: true,
+    limit: 6,
+    sort: "newest",
+  });
+  // Resolve the translatable {en: "..."} title into a plain string here —
+  // OfferCardSlider/OfferProductCard are client components without easy
+  // access to the request's language cookie.
+  const products = (rawProducts || []).map((product) => ({
+    ...product,
+    title: showingTranslateValue(product.title),
+  }));
 
   return (
     // Same total height as the hero banner (CarouselCard) beside it — kept
-    // in sync with CarouselCard's slide height classes. Sized to comfortably
-    // fit a full DiscountedCard (image + title + rating + price + meta)
-    // without clipping, rather than shrinking the banner's old height down
-    // to fit these taller product cards.
-    <div className="w-full group h-[420px] sm:h-[460px] lg:h-[520px] flex flex-col">
+    // in sync with CarouselCard's slide height classes.
+    <div className="w-full group h-[260px] sm:h-[340px] lg:h-[400px] flex flex-col">
       <div className="shrink-0 bg-primary/10 dark:bg-primary/20 text-foreground px-6 py-1 border border-b-0 border-primary/20 rounded-t-xl flex items-center justify-center">
         <h3 className="text-sm font-medium">
           {showingTranslateValue(
@@ -44,9 +52,9 @@ const OfferCard = async ({ attributes }) => {
           ) || "Latest Offers"}
         </h3>
       </div>
-      <div className="flex-1 min-h-0 rounded-b-xl overflow-hidden border border-primary/30 bg-card">
+      <div className="flex-1 min-h-0 rounded-b-xl overflow-hidden border border-primary/30 bg-card p-2">
         {products?.length > 0 ? (
-          <OfferCardSlider products={products} attributes={attributes} />
+          <OfferCardSlider products={products} />
         ) : (
           <p className="px-4 py-8 text-center text-sm text-muted-foreground">
             No active offers right now — check back soon!
