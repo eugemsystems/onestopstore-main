@@ -3,7 +3,8 @@
 import { cookies } from "next/headers";
 import CarouselCard from "@components/carousel/CarouselCard";
 import { getStoreCustomizationSetting } from "@services/SettingServices";
-import { searchProducts } from "@lib/actions/product.actions";
+import { searchProducts, getProductsByIds } from "@lib/actions/product.actions";
+import { getHomePageContent } from "@lib/actions/home.actions";
 
 const MainCarousel = async () => {
   const cookieStore = await cookies();
@@ -20,30 +21,46 @@ const MainCarousel = async () => {
   const { storeCustomizationSetting } = await getStoreCustomizationSetting();
   const slider = storeCustomizationSetting?.slider;
 
-  // Real, live content beats static placeholder banners — pull a handful of
-  // currently on-sale products and turn each into a slide (real photo,
-  // real discount, real link). Falls back to the CMS-configured static
-  // slides if nothing is on sale right now.
-  const { products: saleProducts } = await searchProducts({
-    onSale: true,
-    limit: 5,
-    sort: "newest",
-  });
+  // Priority 1: admin-curated products. `content.products_ids` is
+  // aggregated server-side (onestopstore-api) from every product picker
+  // across the admin "Home Pages" builder — whatever's configured there
+  // drives the hero banner directly.
+  const { content: homeContent } = await getHomePageContent();
+  const { products: bannerProducts } =
+    homeContent?.products_ids?.length > 0
+      ? await getProductsByIds(homeContent.products_ids)
+      : { products: [] };
+
+  // Priority 2: real, live content still beats static placeholder banners
+  // — pull a handful of currently on-sale products and turn each into a
+  // slide (real photo, real discount, real link) if nothing's curated.
+  const { products: saleProducts } = bannerProducts?.length
+    ? { products: [] }
+    : await searchProducts({ onSale: true, limit: 5, sort: "newest" });
 
   let sliderData;
-  if (saleProducts?.length > 0) {
+  if (bannerProducts?.length > 0) {
+    sliderData = bannerProducts.map((product) => ({
+      id: product._id,
+      title: showingTranslateValue(product.title),
+      info: showingTranslateValue(product.category?.name),
+      buttonName: "Shop Now",
+      url: `/product/${product.slug}`,
+      image: product.image?.[0] || "/slider/slider-1.jpg",
+      fit: "contain",
+      price: product.prices,
+    }));
+  } else if (saleProducts?.length > 0) {
     sliderData = saleProducts.map((product) => ({
       id: product._id,
       title: showingTranslateValue(product.title),
-      info:
-        product.prices?.discount > 0
-          ? `Now ${formatMoney(product.prices.price)} — save ${product.prices.discount}%`
-          : "On sale now",
+      info: showingTranslateValue(product.category?.name),
       buttonName: "Shop Now",
       url: `/product/${product.slug}`,
       image: product.image?.[0] || "/slider/slider-1.jpg",
       fit: "contain",
       badge: "On Sale",
+      price: product.prices,
     }));
   } else {
     sliderData = [
@@ -83,10 +100,5 @@ const MainCarousel = async () => {
     </>
   );
 };
-
-function formatMoney(n) {
-  const num = Number(n) || 0;
-  return `$${num.toFixed(2)}`;
-}
 
 export default MainCarousel;

@@ -330,6 +330,44 @@ export async function getRelatedProducts(category) {
 }
 
 /**
+ * Get multiple products by ID in one request (`/product?ids=1,2,3`).
+ * The API doesn't guarantee the response order matches the ids order, so
+ * this re-orders client-side to match the input list — callers that need a
+ * specific curated order (e.g. an admin-configured banner) rely on this.
+ */
+export async function getProductsByIds(ids = []) {
+  const cleanIds = (Array.isArray(ids) ? ids : [])
+    .map((id) => String(id).trim())
+    .filter(Boolean);
+
+  if (cleanIds.length === 0) {
+    return { success: true, products: [], error: null };
+  }
+
+  try {
+    const response = await resilientFetch(
+      `${baseURL}/product?ids=${cleanIds.join(",")}`,
+      { next: { revalidate: 120, tags: ["home_banner_products"] } },
+    );
+    const payload = await handleResponse(response);
+    const byId = new Map(
+      unwrapList(payload)
+        .map(toTemplateProduct)
+        .filter(Boolean)
+        .map((product) => [String(product.id), product]),
+    );
+
+    const products = cleanIds
+      .map((id) => byId.get(String(id)))
+      .filter(Boolean);
+
+    return { success: true, products, error: null };
+  } catch (error) {
+    return { success: false, products: [], error: error.message };
+  }
+}
+
+/**
  * Revalidate product cache
  */
 export async function revalidateProducts() {

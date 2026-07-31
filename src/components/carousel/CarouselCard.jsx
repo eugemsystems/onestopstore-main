@@ -9,6 +9,11 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
+const formatMoney = (n) => {
+  const num = Number(n) || 0;
+  return `$${num.toFixed(2)}`;
+};
+
 const CarouselCard = ({ storeCustomizationSetting, sliderData }) => {
   return (
     <Swiper
@@ -63,6 +68,23 @@ const CarouselCard = ({ storeCustomizationSetting, sliderData }) => {
               <h1 className="mb-2  text-xl sm:text-lg md:text-2xl line-clamp-1 md:line-clamp-none  lg:line-clamp-none  lg:text-3xl font-bold text-white drop-shadow">
                 {item.title}
               </h1>
+              {item.price ? (
+                <div className="mb-1 flex items-baseline gap-2 flex-wrap">
+                  <span className="text-2xl sm:text-xl md:text-3xl font-bold text-white drop-shadow">
+                    {formatMoney(item.price.price)}
+                  </span>
+                  {item.price.discount > 0 && (
+                    <>
+                      <span className="text-base text-white/70 line-through">
+                        {formatMoney(item.price.originalPrice)}
+                      </span>
+                      <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">
+                        -{item.price.discount}%
+                      </span>
+                    </>
+                  )}
+                </div>
+              ) : null}
               <p className="text-base leading-6 text-white/90 font-sans line-clamp-1  md:line-clamp-none lg:line-clamp-none drop-shadow">
                 {item.info}
               </p>
