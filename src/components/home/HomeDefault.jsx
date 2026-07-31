@@ -41,7 +41,7 @@ const HomeDefault = ({
             {/* Coupon Offer Card */}
             <div className="w-full hidden lg:flex ">
               <Suspense fallback={<p>Loading coupons...</p>}>
-                <OfferCard attributes={attributes} />
+                <OfferCard />
               </Suspense>
             </div>
           </div>
