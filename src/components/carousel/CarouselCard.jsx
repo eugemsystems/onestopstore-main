@@ -44,7 +44,9 @@ const CarouselCard = ({ storeCustomizationSetting, sliderData }) => {
           className="h-full relative rounded-lg overflow-hidden dark:bg-background"
           key={i + 1}
         >
-          <div className="relative h-[260px] sm:h-[340px] lg:h-[400px] w-full text-sm text-muted-foreground hover:text-primary dark:bg-background">
+          {/* Height kept in sync with OfferCard's "Latest Offers" slot
+              beside this banner — both sections must match. */}
+          <div className="relative h-[420px] sm:h-[460px] lg:h-[520px] w-full text-sm text-muted-foreground hover:text-primary dark:bg-background">
             <Image
               fill
               sizes="(max-width: 1024px) 100vw, 60vw"

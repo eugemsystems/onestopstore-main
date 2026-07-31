@@ -31,9 +31,14 @@ const OfferCard = async ({ attributes }) => {
   const { products } = await searchProducts({ onSale: true, limit: 6, sort: "newest" });
 
   return (
+    // Same total height as the hero banner (CarouselCard) beside it — kept
+    // in sync with CarouselCard's slide height classes. Sized to comfortably
+    // fit a full DiscountedCard (image + title + rating + price + meta)
+    // without clipping, rather than shrinking the banner's old height down
+    // to fit these taller product cards.
     <div className="w-full group h-[420px] sm:h-[460px] lg:h-[520px] flex flex-col">
-      <div className="shrink-0 bg-primary/10 dark:bg-primary/20 text-foreground px-6 py-2 border border-b-0 border-primary/20 rounded-t-xl flex items-center justify-center">
-        <h3 className="text-base font-medium">
+      <div className="shrink-0 bg-primary/10 dark:bg-primary/20 text-foreground px-6 py-1 border border-b-0 border-primary/20 rounded-t-xl flex items-center justify-center">
+        <h3 className="text-sm font-medium">
           {showingTranslateValue(
             storeCustomizationSetting?.home?.discount_title,
           ) || "Latest Offers"}

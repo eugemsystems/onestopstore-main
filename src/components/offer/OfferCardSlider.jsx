@@ -7,19 +7,17 @@ import "swiper/css";
 import DiscountedCard from "@components/product/DiscountedCard";
 
 /**
- * Vertical, slow-autoplay carousel of full product cards for the "Latest
+ * Horizontal, slow-autoplay carousel of full product cards for the "Latest
  * Offers" slot beside the hero banner — same DiscountedCard used in the
- * "Latest Deals" grid further down the page, just one at a time, sliding
- * the way MainCarousel's hero slides do (only vertically, to fit this
- * slot's narrow, fixed-height column).
+ * "Latest Deals" grid further down the page, two at a time, sliding the
+ * same way MainCarousel's hero slides do.
  */
 const OfferCardSlider = ({ products, attributes }) => {
   return (
     <Swiper
-      direction="vertical"
-      slidesPerView={1}
+      slidesPerView={2}
       spaceBetween={12}
-      loop={products.length > 1}
+      loop={products.length > 2}
       autoplay={{
         delay: 3500,
         disableOnInteraction: false,
