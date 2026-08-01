@@ -3,6 +3,7 @@ import React from "react";
 //internal import
 import PageHeader from "@components/header/PageHeader";
 import CMSkeletonTwo from "@components/preloader/CMSkeleton";
+import PolicyPageLayout from "@components/policy/PolicyPageLayout";
 import { getCustomizationSettings } from "@lib/actions/settings.actions";
 
 export const metadata = {
@@ -24,20 +25,16 @@ const TermsAndConditions = async () => {
         title={terms_and_conditions?.title}
       />
 
-      <div className="relative z-10 mt-4 bg-background text-foreground">
-        <div className="max-w-screen-2xl mx-auto px-3 sm:px-10">
-          <div className="prose prose-sm sm:prose-base max-w-none dark:prose-invert">
-            <CMSkeletonTwo
-              html
-              count={15}
-              height={15}
-              error={error}
-              loading={false}
-              data={terms_and_conditions?.description}
-            />
-          </div>
-        </div>
-      </div>
+      <PolicyPageLayout>
+        <CMSkeletonTwo
+          html
+          count={15}
+          height={15}
+          error={error}
+          loading={false}
+          data={terms_and_conditions?.description}
+        />
+      </PolicyPageLayout>
     </div>
   );
 };

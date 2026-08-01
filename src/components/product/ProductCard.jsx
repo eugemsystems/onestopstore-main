@@ -279,7 +279,7 @@ const ProductCard = ({ product, attributes, compact = false }) => {
         {/* product info start */}
         <div
           className={`flex flex-1 flex-col ${
-            compact ? "px-2.5 pt-2 pb-2.5" : "px-4 pt-3 pb-4"
+            compact ? "px-2.5 pt-2 pb-2.5 justify-center" : "px-4 pt-3 pb-4"
           }`}
           style={{
             backgroundImage:

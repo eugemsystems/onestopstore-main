@@ -4,6 +4,7 @@ import React from "react";
 
 import PageHeader from "@components/header/PageHeader";
 import CMSkeletonTwo from "@components/preloader/CMSkeleton";
+import PolicyPageLayout from "@components/policy/PolicyPageLayout";
 import { getCustomizationSettings } from "@lib/actions/settings.actions";
 
 export const metadata = {
@@ -24,20 +25,16 @@ const PrivacyPolicy = async () => {
         headerBg={privacy_policy?.header_bg}
         title={privacy_policy?.title}
       />
-      <div className="relative z-10 mt-4 bg-background text-foreground">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-10">
-          <div className="prose prose-sm sm:prose-base max-w-none dark:prose-invert">
-            <CMSkeletonTwo
-              html
-              count={15}
-              height={15}
-              error={error}
-              loading={false}
-              data={privacy_policy?.description}
-            />
-          </div>
-        </div>
-      </div>
+      <PolicyPageLayout>
+        <CMSkeletonTwo
+          html
+          count={15}
+          height={15}
+          error={error}
+          loading={false}
+          data={privacy_policy?.description}
+        />
+      </PolicyPageLayout>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import PageHeader from "@components/header/PageHeader";
+import PolicyPageLayout from "@components/policy/PolicyPageLayout";
 
 export const metadata = {
   title: "Shipping Policy",
@@ -38,13 +39,9 @@ const ShippingPolicy = async () => {
   return (
     <div className="min-h-screen bg-background">
       <PageHeader title={{ en: "Shipping Policy" }} />
-      <div className="relative z-10 mt-4 bg-background text-foreground">
-        <div className="max-w-screen-2xl mx-auto px-3 sm:px-10 py-6">
-          <div className="prose prose-sm sm:prose-base max-w-none dark:prose-invert">
-            <div dangerouslySetInnerHTML={{ __html: SHIPPING_POLICY_HTML }} />
-          </div>
-        </div>
-      </div>
+      <PolicyPageLayout>
+        <div dangerouslySetInnerHTML={{ __html: SHIPPING_POLICY_HTML }} />
+      </PolicyPageLayout>
     </div>
   );
 };

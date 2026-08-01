@@ -357,12 +357,18 @@ const FooterModern = async ({
               <>© All rights reserved. Made by <span className="text-gray-400">ThemeTags</span></>
             )}
           </p>
-          <div className="flex space-x-6">
+          <div className="flex flex-wrap gap-x-6 gap-y-1 justify-center">
             <Link href="/terms-and-conditions" className="text-gray-500 hover:text-emerald-500 transition-colors">
               Terms &amp; conditions
             </Link>
             <Link href="/privacy-policy" className="text-gray-500 hover:text-emerald-500 transition-colors">
               Privacy Policy
+            </Link>
+            <Link href="/return-policy" className="text-gray-500 hover:text-emerald-500 transition-colors">
+              Return Policy
+            </Link>
+            <Link href="/shipping-policy" className="text-gray-500 hover:text-emerald-500 transition-colors">
+              Shipping Policy
             </Link>
           </div>
         </div>
