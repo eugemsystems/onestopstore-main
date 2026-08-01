@@ -51,7 +51,7 @@ const OfferCard = async ({ attributes }) => {
     // Sized to comfortably fit one row of the full-size DiscountedCard
     // (image + rating + price + delivery meta) plus 2 list rows below,
     // without clipping. Kept in sync with CarouselCard's banner height.
-    <div className="w-full group h-[640px] sm:h-[700px] lg:h-[760px] flex flex-col">
+    <div className="w-full group h-[520px] sm:h-[580px] lg:h-[640px] flex flex-col">
       <div className="shrink-0 bg-primary/10 dark:bg-primary/20 text-foreground px-6 py-2 border border-b-0 border-primary/20 rounded-t-xl flex items-center justify-center">
         <h3 className="text-base font-medium">
           {showingTranslateValue(
