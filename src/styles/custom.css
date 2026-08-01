@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* plugin */
+@plugin "@tailwindcss/typography";
 /* @plugin "@tailwindcss/forms"; */
 
 /* added some styles on root */
