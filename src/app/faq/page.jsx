@@ -31,62 +31,54 @@ const Faq = async () => {
     return updatedData;
   };
 
-  // Admin-managed FAQs (Settings > FAQ) take priority; the built-in
-  // fallback list only shows while none have been published yet.
+  // Admin-managed FAQs (Settings > FAQ) take priority; this hardcoded list
+  // is the fallback whenever none have been published yet — real
+  // OneStopStore content, not generic/empty CMS placeholder fields.
   const localFallbackFaqs = [
     {
-      question: showingTranslateValue(storeCustomizationSetting?.faq?.faq_one),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_one,
-      ),
+      question: "How long does shipping take?",
+      answer:
+        "We offer same-day dispatch in Harare and Bulawayo for in-stock appliances and electronics. Delivery generally takes 3-7 working days Monday to Friday, subject to payment confirmation before 12h00 — see our Shipping Policy for full details.",
     },
     {
-      question: showingTranslateValue(storeCustomizationSetting?.faq?.faq_two),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_two,
-      ),
+      question: "What is your return policy?",
+      answer:
+        "We offer a 30-day return policy from the delivery date under the Consumer Protection Act. Items must be unused and in their original packaging. See our Return Policy page for the full terms, including non-returnable items and warranty details.",
     },
     {
-      question: showingTranslateValue(
-        storeCustomizationSetting?.faq?.faq_three,
-      ),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_three,
-      ),
+      question: "How do I track my order?",
+      answer:
+        "Once your order ships you'll receive updates via email, and you can track it anytime by logging into your account and visiting your Order History.",
     },
     {
-      question: showingTranslateValue(storeCustomizationSetting?.faq?.faq_four),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_four,
-      ),
+      question: "What payment methods do you accept?",
+      answer:
+        "We accept major cards and a range of local and regional payment options. All payments are processed securely at checkout.",
     },
     {
-      question: showingTranslateValue(storeCustomizationSetting?.faq?.faq_five),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_five,
-      ),
+      question: "Do you deliver outside Harare and Bulawayo?",
+      answer:
+        "Yes — we deliver nationwide across Zimbabwe. Delivery timeframes may be longer outside our main hubs; free delivery applies within Harare and Bulawayo, see our Shipping Policy for details.",
     },
     {
-      question: showingTranslateValue(storeCustomizationSetting?.faq?.faq_six),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_six,
-      ),
+      question: "Can I change or cancel my order?",
+      answer:
+        "Orders can be modified or cancelled shortly after placement, before they enter processing. Contact our customer service team as soon as possible if you need to make a change.",
     },
     {
-      question: showingTranslateValue(
-        storeCustomizationSetting?.faq?.faq_seven,
-      ),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_seven,
-      ),
+      question: "How do I create an account?",
+      answer:
+        "Click 'Sign Up' in the top navigation, enter your email address and create a password. You can also create an account during checkout.",
     },
     {
-      question: showingTranslateValue(
-        storeCustomizationSetting?.faq?.faq_eight,
-      ),
-      answer: showingTranslateValue(
-        storeCustomizationSetting?.faq?.description_eight,
-      ),
+      question: "What if I receive a damaged or faulty item?",
+      answer:
+        "Contact us within 24-48 hours of delivery with photos of the damaged item and packaging, and we'll arrange a repair, replacement, or refund in line with your rights under the Consumer Protection Act.",
+    },
+    {
+      question: "How do I contact customer service?",
+      answer:
+        "Reach us by phone at +263 77 941 1028, by email at support@onestopstore.co.zw, or through live chat on the website.",
     },
   ];
 

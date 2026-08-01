@@ -1,104 +1,69 @@
-import React from "react";
 import Image from "next/image";
 
 //internal import
-import { showingTranslateValue } from "@lib/translate";
 import PageHeader from "@components/header/PageHeader";
-import CMSkeletonTwo from "@components/preloader/CMSkeleton";
-import { getCustomizationSettings } from "@lib/actions/settings.actions";
 
 export const metadata = {
   title: "About Us",
   description:
-    "Learn more about our story, mission, and the team behind our store.",
-  keywords: ["about", "our story", "team", "mission"],
+    "OneStopStore is Zimbabwe's online marketplace for appliances, electronics and everyday goods, with fast delivery in Harare and Bulawayo and nationwide shipping.",
+  keywords: ["about", "our story", "OneStopStore", "Zimbabwe online store"],
 };
 
-const AboutUs = async ({}) => {
-  const { storeCustomizationSetting, error } = await getCustomizationSettings();
-  const about_us = storeCustomizationSetting?.about_us;
-  // console.log("about_us", about_us);
-
+const AboutUs = () => {
   return (
     <div className="bg-background">
-      <PageHeader headerBg={about_us?.header_bg} title={about_us?.title} />
+      <PageHeader title={{ en: "About Us" }} />
 
       <div className="bg-background text-foreground">
         <div className="max-w-screen-2xl mx-auto lg:py-20 py-10 px-4 sm:px-10">
           <div className="grid grid-flow-row lg:grid-cols-2 gap-4 lg:gap-16 items-center">
-            <div className="">
+            <div>
               <h3 className="text-xl lg:text-3xl mb-2 font-semibold text-foreground">
-                {/* {t("common:about-section-title")} */}
-
-                <CMSkeletonTwo
-                  count={1}
-                  height={50}
-                  error={error}
-                  loading={false}
-                  data={about_us?.top_title}
-                />
+                Your one-stop shop for everything you need
               </h3>
               <div className="mt-3 text-base text-muted-foreground leading-7">
                 <p>
-                  <CMSkeletonTwo
-                    count={5}
-                    height={20}
-                    error={error}
-                    loading={false}
-                    data={about_us?.top_description}
-                  />
+                  OneStopStore is an online marketplace serving customers
+                  across Zimbabwe. From home appliances and electronics to
+                  everyday household goods, we bring together a wide range of
+                  products in one place so you don&rsquo;t have to shop
+                  around — hence the name.
+                </p>
+                <p className="mt-4">
+                  We&rsquo;re based in Harare, with same-day dispatch on
+                  in-stock items across Harare and Bulawayo, and delivery
+                  nationwide. Whether you&rsquo;re furnishing a new home,
+                  replacing a broken appliance, or just looking for a good
+                  deal, our goal is to make it simple, affordable and
+                  reliable.
                 </p>
               </div>
               <div className="grid md:grid-cols-2 gap-6 lg:grid-cols-2 xl:gap-6 mt-8">
                 <div className="p-8 bg-primary/5 dark:bg-primary/10 border border-primary/10 shadow-sm rounded-xl">
-                  {error ? (
-                    <CMSkeletonTwo
-                      count={8}
-                      height={20}
-                      error={error}
-                      loading={false}
-                    />
-                  ) : (
-                    <>
-                      <span className="text-3xl block font-extrabold mb-4 text-primary">
-                        {showingTranslateValue(about_us?.card_two_title)}
-                      </span>
-                      <h4 className="text-lg font-bold mb-1 text-foreground">
-                        {showingTranslateValue(about_us?.card_two_sub)}
-                      </h4>
-                      <p className="mb-0 text-muted-foreground leading-7">
-                        {showingTranslateValue(
-                          storeCustomizationSetting?.about_us
-                            ?.card_two_description,
-                        )}
-                      </p>
-                    </>
-                  )}
+                  <span className="text-3xl block font-extrabold mb-4 text-primary">
+                    01
+                  </span>
+                  <h4 className="text-lg font-bold mb-1 text-foreground">
+                    Wide Selection
+                  </h4>
+                  <p className="mb-0 text-muted-foreground leading-7">
+                    Appliances, electronics, furniture and everyday
+                    essentials — new stock added weekly so there&rsquo;s
+                    always something new to discover.
+                  </p>
                 </div>
-                <div className="p-8 bg-indigo-50 shadow-sm rounded-lg">
-                  {error ? (
-                    <CMSkeletonTwo
-                      count={8}
-                      height={20}
-                      error={error}
-                      loading={false}
-                    />
-                  ) : (
-                    <>
-                      <span className="text-3xl block font-extrabold mb-4 text-primary">
-                        {showingTranslateValue(about_us?.card_one_title)}
-                      </span>
-                      <h4 className="text-lg font-bold mb-1 text-foreground">
-                        {showingTranslateValue(about_us?.card_one_sub)}
-                      </h4>
-                      <p className="mb-0 text-muted-foreground leading-7">
-                        {showingTranslateValue(
-                          storeCustomizationSetting?.about_us
-                            ?.card_one_description,
-                        )}
-                      </p>
-                    </>
-                  )}
+                <div className="p-8 bg-primary/5 dark:bg-primary/10 border border-primary/10 shadow-sm rounded-xl">
+                  <span className="text-3xl block font-extrabold mb-4 text-primary">
+                    02
+                  </span>
+                  <h4 className="text-lg font-bold mb-1 text-foreground">
+                    Fast, Reliable Delivery
+                  </h4>
+                  <p className="mb-0 text-muted-foreground leading-7">
+                    Same-day dispatch on in-stock items in Harare and
+                    Bulawayo, with nationwide delivery across Zimbabwe.
+                  </p>
                 </div>
               </div>
             </div>
@@ -107,170 +72,37 @@ const AboutUs = async ({}) => {
               <Image
                 width={920}
                 height={750}
-                src={about_us?.content_right_img || "/about-us.jpg"}
-                alt="logo"
+                src="/about-us.jpg"
+                alt="OneStopStore"
+                className="rounded-lg"
               />
             </div>
           </div>
+
           <div className="mt-10 lg:mt-16 text-base text-muted-foreground leading-7">
             <p>
-              <CMSkeletonTwo
-                count={5}
-                height={20}
-                error={error}
-                loading={false}
-                data={about_us?.middle_description_one}
-              />
+              We started OneStopStore to solve a simple problem: finding
+              everything you need for your home in one trustworthy place,
+              at a fair price, without the runaround. Today that means
+              carrying everything from TVs and fridges to gaming gear and
+              household essentials, backed by real customer support and a
+              straightforward return policy.
             </p>
-
-            <p>
-              <CMSkeletonTwo
-                count={8}
-                height={20}
-                error={error}
-                loading={false}
-                data={about_us?.middle_description_two}
-              />
+            <p className="mt-4">
+              We&rsquo;re still growing, and every order helps us stock more
+              of what Zimbabwean shoppers are actually looking for. Thank
+              you for shopping with us.
             </p>
           </div>
+
           <div className="mt-10 lg:mt-12 flex flex-col sm:grid gap-4">
             <Image
               width={1920}
               height={570}
-              src={about_us?.content_middle_Img || "/about-banner.jpg"}
-              alt="logo"
+              src="/about-banner.jpg"
+              alt="OneStopStore"
               className="block rounded-lg"
             />
-          </div>
-        </div>
-        <div className="bg-muted/50 dark:bg-muted/30 lg:py-20 py-10 border-t border-border/50">
-          <div className="max-w-screen-2xl mx-auto px-3 sm:px-10">
-            <div className="relative flex flex-col sm:flex-row sm:items-end justify-between mb-8">
-              <div className="max-w-2xl">
-                <h3 className="text-xl lg:text-3xl mb-2 font-semibold">
-                  <CMSkeletonTwo
-                    count={1}
-                    height={50}
-                    error={error}
-                    loading={false}
-                    data={about_us?.founder_title}
-                  />
-                </h3>
-                <p className="mt-2 md:mt-3 font-normal block text-base">
-                  <CMSkeletonTwo
-                    count={3}
-                    height={20}
-                    error={error}
-                    loading={false}
-                    data={about_us?.founder_description}
-                  />
-                </p>
-              </div>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-x-5 gap-y-8 lg:grid-cols-6 xl:gap-x-8">
-              <div className="max-w-sm">
-                <Image
-                  width={420}
-                  height={420}
-                  src={about_us?.founder_one_img || "/team/team-1.jpg"}
-                  alt="team-1"
-                  className="block rounded-lg"
-                />
-                <div className="py-4">
-                  <h5 className="text-lg font-semibold ">
-                    {showingTranslateValue(about_us?.founder_one_name)}
-                  </h5>
-                  <span className="opacity-75 text-sm">
-                    {showingTranslateValue(about_us?.founder_one_sub)}
-                  </span>
-                </div>
-              </div>
-              <div className="max-w-sm">
-                <Image
-                  width={420}
-                  height={420}
-                  src={about_us?.founder_two_img || "/team/team-2.jpg"}
-                  alt="team-2"
-                  className="block rounded-lg"
-                />
-                <div className="py-4">
-                  <h5 className="text-lg font-semibold ">
-                    {showingTranslateValue(about_us?.founder_two_name)}
-                  </h5>
-                  <span className="opacity-75 text-sm">
-                    {showingTranslateValue(about_us?.founder_two_sub)}
-                  </span>
-                </div>
-              </div>
-              <div className="max-w-sm">
-                <Image
-                  width={420}
-                  height={420}
-                  src={about_us?.founder_three_img || "/team/team-3.jpg"}
-                  alt="team-3"
-                  className="block rounded-lg"
-                />
-                <div className="py-4">
-                  <h5 className="text-lg font-semibold ">
-                    {showingTranslateValue(about_us?.founder_three_name)}
-                  </h5>
-                  <span className="opacity-75 text-sm">
-                    {showingTranslateValue(about_us?.founder_three_sub)}
-                  </span>
-                </div>
-              </div>
-              <div className="max-w-sm">
-                <Image
-                  width={420}
-                  height={420}
-                  src={about_us?.founder_four_img || "/team/team-4.jpg"}
-                  alt="team-4"
-                  className="block rounded-lg"
-                />
-                <div className="py-4">
-                  <h5 className="text-lg font-semibold ">
-                    {showingTranslateValue(about_us?.founder_four_name)}
-                  </h5>
-                  <span className="opacity-75 text-sm">
-                    {showingTranslateValue(about_us?.founder_four_sub)}
-                  </span>
-                </div>
-              </div>
-              <div className="max-w-sm">
-                <Image
-                  width={420}
-                  height={420}
-                  src={about_us?.founder_five_img || "/team/team-5.jpg"}
-                  alt="team-5"
-                  className="block rounded-lg"
-                />
-                <div className="py-4">
-                  <h5 className="text-lg font-semibold ">
-                    {showingTranslateValue(about_us?.founder_five_name)}
-                  </h5>
-                  <span className="opacity-75 text-sm">
-                    {showingTranslateValue(about_us?.founder_five_sub)}
-                  </span>
-                </div>
-              </div>
-              <div className="max-w-sm">
-                <Image
-                  width={420}
-                  height={420}
-                  src={about_us?.founder_six_img || "/team/team-6.jpg"}
-                  alt="team-6"
-                  className="block rounded-lg"
-                />
-                <div className="py-4">
-                  <h5 className="text-lg font-semibold">
-                    {showingTranslateValue(about_us?.founder_six_name)}
-                  </h5>
-                  <span className="opacity-75 text-sm">
-                    {showingTranslateValue(about_us?.founder_six_sub)}
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
