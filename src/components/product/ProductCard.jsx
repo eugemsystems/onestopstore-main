@@ -37,7 +37,7 @@ import ProductCardMeta from "@components/product/ProductCardMeta";
 import { getFromPrice } from "@utils/getFromPrice";
 import { canAddToCart } from "@utils/cartGuards";
 
-const ProductCard = ({ product, attributes }) => {
+const ProductCard = ({ product, attributes, compact = false }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const { globalSetting } = useSetting();
@@ -180,7 +180,11 @@ const ProductCard = ({ product, attributes }) => {
           </button>
         </div>
 
-        <div className="relative w-full h-48 xl:h-52 border-b border-border/70">
+        <div
+          className={`relative w-full border-b border-border/70 ${
+            compact ? "h-24 xl:h-28" : "h-48 xl:h-52"
+          }`}
+        >
           <ProductLink
             href={`/product/${product?.slug}`}
             className="absolute inset-0 overflow-hidden bg-white"
@@ -274,14 +278,16 @@ const ProductCard = ({ product, attributes }) => {
 
         {/* product info start */}
         <div
-          className="flex flex-1 flex-col px-4 pt-3 pb-4"
+          className={`flex flex-1 flex-col ${
+            compact ? "px-2.5 pt-2 pb-2.5" : "px-4 pt-3 pb-4"
+          }`}
           style={{
             backgroundImage:
               "linear-gradient(to bottom, #fff, color-mix(in oklab, lab(56 94.47 98.89) 10%, #03a9f452))",
           }}
         >
           {/* Brand link — legacy card links to a collections/brand filter */}
-          {product?.brand?.name && (
+          {!compact && product?.brand?.name && (
             <Link
               href={{ pathname: "/shop", query: { brand: product.brand.slug || product.brand.id } }}
               className="mb-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground hover:text-primary"
@@ -292,25 +298,33 @@ const ProductCard = ({ product, attributes }) => {
 
           <ProductLink
             href={`/product/${product?.slug}`}
-            className="mb-1.5 text-sm font-medium text-foreground line-clamp-1 hover:text-primary"
+            className={`text-sm font-medium text-foreground line-clamp-1 hover:text-primary ${compact ? "mb-1" : "mb-1.5"}`}
           >
             {showingTranslateValue(product?.title)}
           </ProductLink>
 
-          <div className="mb-2 flex items-center gap-0.5">
-            <Rating
-              size="md"
-              showReviews={true}
-              rating={product?.average_rating}
-              totalReviews={product?.total_reviews}
-            />
-          </div>
+          {!compact && (
+            <div className="mb-2 flex items-center gap-0.5">
+              <Rating
+                size="md"
+                showReviews={true}
+                rating={product?.average_rating}
+                totalReviews={product?.total_reviews}
+              />
+            </div>
+          )}
 
-          <div className="mb-2">
-            <ProductVariantIndicator product={product} />
-          </div>
+          {!compact && (
+            <div className="mb-2">
+              <ProductVariantIndicator product={product} />
+            </div>
+          )}
 
-          <div className="mb-2.5 flex items-baseline gap-2 rounded-lg bg-background/80 px-2.5 py-1.5 ring-1 ring-inset ring-border/60">
+          <div
+            className={`flex items-baseline gap-2 rounded-lg bg-background/80 ring-1 ring-inset ring-border/60 ${
+              compact ? "mb-0 px-2 py-1" : "mb-2.5 px-2.5 py-1.5"
+            }`}
+          >
             <Price
               card
               product={product}
@@ -322,7 +336,7 @@ const ProductCard = ({ product, attributes }) => {
           </div>
 
           {/* Stock status — only shown when NOT simply in stock */}
-          {r.stockStatus && r.stockStatus !== "in_stock" && (
+          {!compact && r.stockStatus && r.stockStatus !== "in_stock" && (
             <div className="mb-2 flex items-center gap-1 text-[10px] text-red-600">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-red-600" />
               {r.stockStatus.replace(/_/g, " ")}
@@ -330,7 +344,7 @@ const ProductCard = ({ product, attributes }) => {
           )}
 
           {/* Campaign sold bar */}
-          {isInCampaign && (
+          {!compact && isInCampaign && (
             <div className="mb-2">
               <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-0.5">
                 <span>{campaign.campaignSoldCount || 0} Sold</span>
@@ -351,9 +365,11 @@ const ProductCard = ({ product, attributes }) => {
           )}
 
           {/* Delivery estimate + layby eligibility */}
-          <div className="mt-auto pt-1">
-            <ProductCardMeta product={product} />
-          </div>
+          {!compact && (
+            <div className="mt-auto pt-1">
+              <ProductCardMeta product={product} />
+            </div>
+          )}
         </div>
         {/* product info end */}
       </div>

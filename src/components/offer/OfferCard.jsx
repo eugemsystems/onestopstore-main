@@ -13,11 +13,11 @@ import ProductCard from "@components/product/ProductCard";
  * "offers" than an empty coupon widget.
  *
  * Same box (bordered, titled) as before, same outer position beside the
- * hero banner — only the inside changed: a static 3-column CSS grid of
- * the real ProductCard (same one used in Best Sellers/New Arrivals/etc),
- * not a Swiper carousel. A grid divides its container into exact equal
- * columns with no overflow/gap math to get wrong, unlike every
- * Swiper-based attempt before this.
+ * hero banner — a static 2-column, 2-row CSS grid of the real ProductCard
+ * (same one used in Best Sellers/New Arrivals/etc), rendered `compact` to
+ * keep the box a reasonable height with two rows. A grid divides its
+ * container into exact equal columns with no overflow/gap math to get
+ * wrong, unlike every Swiper-based attempt before this.
  */
 const OfferCard = async ({ attributes }) => {
   const cookieStore = await cookies();
@@ -33,14 +33,13 @@ const OfferCard = async ({ attributes }) => {
 
   const { products } = await searchProducts({
     onSale: true,
-    limit: 3,
+    limit: 4,
     sort: "newest",
   });
 
   return (
     // Same total height as the hero banner (CarouselCard) beside it — sized
-    // up from the old compact-list height to fit ProductCard's real height
-    // (image + title + rating + price + meta) in one row without clipping.
+    // to fit two rows of the compact ProductCard without clipping.
     <div className="w-full group h-[420px] sm:h-[460px] lg:h-[520px] flex flex-col">
       <div className="shrink-0 bg-primary/10 dark:bg-primary/20 text-foreground px-6 py-2 border border-b-0 border-primary/20 rounded-t-xl flex items-center justify-center">
         <h3 className="text-base font-medium">
@@ -51,12 +50,13 @@ const OfferCard = async ({ attributes }) => {
       </div>
       <div className="flex-1 min-h-0 rounded-b-xl border border-primary/30 bg-card p-2">
         {products?.length > 0 ? (
-          <div className="grid h-full grid-cols-3 gap-2">
+          <div className="grid h-full grid-cols-2 grid-rows-2 gap-2">
             {products.map((product) => (
               <ProductCard
                 key={product._id}
                 product={product}
                 attributes={attributes}
+                compact
               />
             ))}
           </div>
