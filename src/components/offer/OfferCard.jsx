@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { getStoreCustomizationSetting } from "@services/SettingServices";
 import { searchProducts } from "@lib/actions/product.actions";
-import ProductCard from "@components/product/ProductCard";
+import DiscountedCard from "@components/product/DiscountedCard";
 import OfferProductRow from "@components/offer/OfferProductRow";
 
 /**
@@ -13,9 +13,10 @@ import OfferProductRow from "@components/offer/OfferProductRow";
  * on-sale products instead, which is both real data and a better fit for
  * "offers" than an empty coupon widget.
  *
- * Layout: a top row of 2 product cards (compact ProductCard, same
- * component as Best Sellers/New Arrivals/etc), then below that 2 list
- * rows in the original compact row style (thumbnail + name + price).
+ * Layout: a top row of 2 product cards — the SAME unmodified DiscountedCard
+ * used in the "Latest Deals" grid, reused as-is (no shrunk/compact variant)
+ * — then below that 2 list rows in the compact row style (thumbnail + name
+ * + price).
  *
  *   |--------|  |--------|
  *   |  card  |  |  card  |
@@ -47,7 +48,10 @@ const OfferCard = async ({ attributes }) => {
   }));
 
   return (
-    <div className="w-full group h-[420px] sm:h-[460px] lg:h-[520px] flex flex-col">
+    // Sized to comfortably fit one row of the full-size DiscountedCard
+    // (image + rating + price + delivery meta) plus 2 list rows below,
+    // without clipping. Kept in sync with CarouselCard's banner height.
+    <div className="w-full group h-[640px] sm:h-[700px] lg:h-[760px] flex flex-col">
       <div className="shrink-0 bg-primary/10 dark:bg-primary/20 text-foreground px-6 py-2 border border-b-0 border-primary/20 rounded-t-xl flex items-center justify-center">
         <h3 className="text-base font-medium">
           {showingTranslateValue(
@@ -59,13 +63,12 @@ const OfferCard = async ({ attributes }) => {
         {cardProducts.length > 0 || rowProducts.length > 0 ? (
           <>
             {cardProducts.length > 0 && (
-              <div className="flex-1 min-h-0 grid grid-cols-2 gap-2">
+              <div className="shrink-0 grid grid-cols-2 gap-2">
                 {cardProducts.map((product) => (
-                  <ProductCard
+                  <DiscountedCard
                     key={product._id}
                     product={product}
                     attributes={attributes}
-                    compact
                   />
                 ))}
               </div>

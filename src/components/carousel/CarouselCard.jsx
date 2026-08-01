@@ -46,7 +46,7 @@ const CarouselCard = ({ storeCustomizationSetting, sliderData }) => {
         >
           {/* Height kept in sync with OfferCard's "Latest Offers" slot
               beside this banner — both sections must match. */}
-          <div className="relative h-[420px] sm:h-[460px] lg:h-[520px] w-full text-sm text-muted-foreground hover:text-primary dark:bg-background">
+          <div className="relative h-[640px] sm:h-[700px] lg:h-[760px] w-full text-sm text-muted-foreground hover:text-primary dark:bg-background">
             <Image
               fill
               sizes="(max-width: 1024px) 100vw, 60vw"
