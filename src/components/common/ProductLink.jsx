@@ -31,7 +31,13 @@ const ProductLink = ({ href, className = "", children, ...props }) => {
   }
 
   return (
-    <Link href={href} className={combinedClassName} {...props}>
+    <Link
+      href={href}
+      className={combinedClassName}
+      target="_blank"
+      rel="noopener noreferrer"
+      {...props}
+    >
       <ProductLinkIndicator />
       {children}
     </Link>
