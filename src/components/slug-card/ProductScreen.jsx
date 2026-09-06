@@ -10,7 +10,6 @@ import { FaWhatsapp } from "react-icons/fa";
 //internal import
 
 import Price from "@components/common/Price";
-import Stock from "@components/common/Stock";
 import Tags from "@components/common/Tags";
 import ProductHighlights from "@components/slug-card/ProductHighlights";
 import Discount from "@components/common/Discount";
@@ -173,9 +172,6 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
               )}
 
               <div className="mb-2 md:mb-2.5 block -mt-1.5">
-                <div className="relative">
-                  <Stock stock={stock} />
-                </div>
                 <h1 className="leading-7 text-lg md:text-xl lg:text-2xl mb-1 font-semibold  text-foreground">
                   {showingTranslateValue(product?.title)}
                 </h1>

@@ -8,7 +8,6 @@ import Tags from "@components/common/Tags";
 import Discount from "@components/common/Discount";
 import useUtilsFunction from "@hooks/useUtilsFunction";
 import Rating from "@components/common/Rating";
-import Stock from "@components/common/Stock";
 import useProductAction from "@hooks/useProductAction";
 import { useSetting } from "@context/SettingContext";
 import {
@@ -84,7 +83,6 @@ const ProductModal = ({
 
           <div className="min-w-0 flex-1">
             <div className="mb-3">
-              <Stock In stock={stock} />
               <Link href={`/product/${product.slug}`} onClick={() => setModalOpen(false)}>
                 <h2 className="mt-2 text-lg font-semibold text-foreground transition-colors hover:text-primary sm:text-xl">
                   {showingTranslateValue(product?.title)}
