@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
-import { ArrowDown, ArrowUp, ChevronRight, Minus, Plus } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Minus, Plus, X, ZoomIn } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 
 //internal import
@@ -35,12 +35,13 @@ import {
   FiMessageCircle,
 } from "react-icons/fi";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
 import CampaignCountdown from "@components/campaign/CampaignCountdown";
 import SaleCountdown from "@components/product/SaleCountdown";
 import LaybyBanner from "@components/product/LaybyBanner";
 import WarrantyReturnCards from "@components/product/WarrantyReturnCards";
+import MainModal from "@components/modal/MainModal";
 
 const ProductScreen = ({ product, reviews, relatedProducts }) => {
   const router = useRouter();
@@ -75,6 +76,18 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
     product,
     globalSetting,
   });
+
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const images = product?.image || [];
+  const activeImage = selectedImage || images?.[0];
+  const activeImageIndex = Math.max(0, images.indexOf(activeImage));
+
+  const showAdjacentImage = (direction) => {
+    if (images.length < 2) return;
+    const nextIndex =
+      (activeImageIndex + direction + images.length) % images.length;
+    setSelectedImage(images[nextIndex]);
+  };
 
   // console.log("discount", discount);
 
@@ -119,7 +132,10 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
               {/* Image gallery card */}
               <div className="rounded-2xl border border-border bg-card p-3 sm:p-4">
                 <div className="overflow-hidden w-full mx-auto">
-                  <div className="relative aspect-square w-full rounded-xl bg-muted overflow-hidden">
+                  <div
+                    className="relative aspect-square w-full rounded-xl bg-muted overflow-hidden cursor-zoom-in"
+                    onClick={() => setZoomOpen(true)}
+                  >
                     <Image
                       src={
                         selectedImage ||
@@ -132,6 +148,9 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                       sizes="(max-width: 768px) 100vw, 500px"
                       className="object-cover"
                     />
+                    <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/70 text-foreground">
+                      <ZoomIn size={18} />
+                    </span>
                   </div>
                 </div>
 
@@ -146,6 +165,50 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                 )}
               </div>
             </div>
+
+            <MainModal
+              modalOpen={zoomOpen}
+              handleCloseModal={() => setZoomOpen(false)}
+            >
+              <div className="relative aspect-square w-full max-w-2xl mx-auto">
+                <Image
+                  src={
+                    activeImage ||
+                    "https://res.cloudinary.com/ahossain/image/upload/v1655097002/placeholder_kvepfp.png"
+                  }
+                  alt="product zoomed"
+                  fill
+                  sizes="(max-width: 768px) 90vw, 700px"
+                  className="object-contain"
+                />
+              </div>
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Previous image"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-foreground hover:bg-background"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showAdjacentImage(-1);
+                    }}
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Next image"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-foreground hover:bg-background"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showAdjacentImage(1);
+                    }}
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </>
+              )}
+            </MainModal>
 
             {/* Product details */}
             <div className="lg:sticky top-44 mt-6 lg:mt-0 self-start z-10 mx-auto lg:col-span-4 lg:row-span-2 lg:row-end-2 lg:max-w-none">
