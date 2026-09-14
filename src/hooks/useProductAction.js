@@ -66,6 +66,24 @@ export default function useProductAction({
     setManualImage(null); // let the newly-selected variant's own image win
   };
 
+  // Whether picking `valueId` for `attributeId` (together with whatever else
+  // is already selected for OTHER attributes) can resolve to an in-stock
+  // variant. Lets the picker grey out/disable dead-end combinations before
+  // the user has to select everything and hit "insufficient stock" — rather
+  // than only surfacing that after a full, doomed selection.
+  const isValueAvailable = (attributeId, valueId) => {
+    if (!product?.variants?.length) return true;
+    return product.variants.some((v) => {
+      if (!v.attributeValueIds?.includes(valueId)) return false;
+      const matchesOtherSelections = variantAttributes.every((attr) => {
+        if (attr.id === attributeId) return true;
+        const selected = selectedValues[attr.id];
+        return selected == null || v.attributeValueIds?.includes(selected);
+      });
+      return matchesOtherSelections && (v.stock ?? 0) > 0;
+    });
+  };
+
   // Before a variant is fully selected, show the cheapest variant's price
   // as a "From $X" teaser (matches the legacy detail page) instead of $0 —
   // stock/add-to-cart still stay gated on `matchedVariant` below, this only
@@ -181,6 +199,7 @@ export default function useProductAction({
     requiresVariant,
     selectedValues,
     selectVariantValue,
+    isValueAvailable,
     isVariantComplete,
     matchedVariant,
 

@@ -63,6 +63,7 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
     requiresVariant,
     selectedValues,
     selectVariantValue,
+    isValueAvailable,
     isVariantComplete,
     matchedVariant,
     category_name,
@@ -280,6 +281,7 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                         attribute={attribute}
                         selectedValues={selectedValues}
                         onSelect={selectVariantValue}
+                        isValueAvailable={isValueAvailable}
                       />
                     </div>
                   ))}
