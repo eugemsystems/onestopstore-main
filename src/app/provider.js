@@ -1,6 +1,5 @@
 "use client";
 
-import { CartProvider } from "react-use-cart";
 import { ToastContainer } from "react-toastify";
 import { SessionProvider } from "next-auth/react";
 
@@ -9,6 +8,7 @@ import { UserProvider } from "@context/UserContext";
 import { SidebarProvider } from "@context/SidebarContext";
 import { LanguageProvider } from "@context/LanguageContext";
 import { WishlistProvider } from "@context/WishlistContext";
+import CartSyncProvider from "@components/cart/CartSyncProvider";
 import QueryProvider from "@lib/providers/QueryProvider";
 import FacebookPixel from "@components/common/FacebookPixel";
 
@@ -31,7 +31,7 @@ const Providers = ({ children, storeSetting }) => {
             <SidebarProvider>
               <UserProvider>
                 <WishlistProvider>
-                  <CartProvider>{children}</CartProvider>
+                  <CartSyncProvider>{children}</CartSyncProvider>
                 </WishlistProvider>
               </UserProvider>
             </SidebarProvider>
