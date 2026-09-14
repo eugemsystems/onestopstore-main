@@ -81,34 +81,196 @@ const styles = StyleSheet.create({
  * `globalSetting` is the same store-settings object InvoiceForDownload.jsx
  * receives (logo, company_name, address, contact, email, website, vat_number).
  */
+const QUOTE_VALIDITY_DAYS = 7;
+
 const QuotationPDF = ({ data, globalSetting }) => {
   const currency = globalSetting?.default_currency || "$";
   const fp = (val) => formatPriceFn(val, currency);
 
-  // TODO(human): Design the quotation's actual layout here.
-  //
-  // InvoiceForDownload.jsx (components/invoice/) is the sibling component to
-  // work from — it already solves the same layout problem (header with
-  // company info, a billed-to block, a line-items table with the col1..col5
-  // widths above, a summary card, a footer) for a real invoice. A quotation
-  // needs most of the same pieces, with a few real decisions to make since
-  // it's a DIFFERENT kind of document:
-  //   - No invoice number / due date — what goes in their place? A
-  //     "Quotation" title + generatedAt is one option; a validity window
-  //     ("Valid for 7 days from <date>") is another common convention for
-  //     quotes specifically.
-  //   - No payment method (nothing's been paid) and no order status pill.
-  //   - `data.user_info` can be null (someone downloading a quote before
-  //     filling in their address) — decide what the "billed to" section
-  //     shows in that case rather than crashing on missing fields.
-  //   - Consider a visual cue that this is NOT a receipt/invoice (e.g. a
-  //     watermark-style "QUOTATION — NOT A TAX INVOICE" label), since a
-  //     customer or their accountant could otherwise mistake one for the
-  //     other.
+  const generated = dayjs(data?.generatedAt);
+  // Short, human-readable reference rather than a real sequential number —
+  // this document was never persisted anywhere, so there's nothing to look
+  // up against. Stable for a given generatedAt, in case the same quote is
+  // re-downloaded.
+  const quoteRef = generated.isValid() ? `Q-${generated.format("YYYYMMDD-HHmmss")}` : "Q-DRAFT";
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Text>Quotation PDF layout not yet implemented</Text>
+        {/* Header */}
+        <View style={tw("flex flex-row justify-between items-start mb-8")}>
+          <View>
+            <Text style={tw("text-2xl font-bold text-primary uppercase tracking-wider")}>
+              Quotation
+            </Text>
+            <View style={tw("mt-1 px-3 py-1 bg-accent rounded-full inline-block")}>
+              <Text style={tw("text-white text-xs font-bold")}>
+                NOT A TAX INVOICE — ESTIMATE ONLY
+              </Text>
+            </View>
+          </View>
+
+          <View style={tw("text-right")}>
+            {(globalSetting?.invoice_logo || globalSetting?.logo) && (
+              <Image
+                src={globalSetting?.invoice_logo || globalSetting.logo}
+                style={tw("w-36 h-12 mb-2")}
+              />
+            )}
+            <Text style={tw("font-bold")}>
+              {globalSetting?.company_name || "Company Name"}
+            </Text>
+            <Text style={tw("text-xs")}>{globalSetting?.address}</Text>
+            <Text style={tw("text-xs")}>
+              {globalSetting?.contact} • {globalSetting?.email}
+            </Text>
+            <Text style={tw("text-xs")}>
+              {globalSetting?.website}
+              {globalSetting?.vat_number && ` • VAT: ${globalSetting.vat_number}`}
+            </Text>
+          </View>
+        </View>
+
+        {/* Quotation details */}
+        <View style={tw("flex flex-row justify-between mb-8")}>
+          <View>
+            <Text style={tw("text-sm font-bold text-dark mb-2")}>PREPARED FOR:</Text>
+            {data?.user_info?.name || data?.user_info?.email || data?.user_info?.contact ? (
+              <>
+                <Text style={tw("text-sm")}>{data.user_info.name || "Customer"}</Text>
+                {data.user_info.email && (
+                  <Text style={tw("text-sm text-muted-foreground")}>{data.user_info.email}</Text>
+                )}
+                {data.user_info.contact && (
+                  <Text style={tw("text-sm text-muted-foreground")}>{data.user_info.contact}</Text>
+                )}
+              </>
+            ) : (
+              <Text style={tw("text-sm text-muted-foreground")}>
+                Guest — address not yet provided
+              </Text>
+            )}
+          </View>
+
+          <View style={tw("text-right")}>
+            <View style={tw("flex flex-row mb-1")}>
+              <Text style={tw("w-28 text-sm font-bold text-dark text-left")}>Quote Ref:</Text>
+              <Text style={tw("text-sm")}>{quoteRef}</Text>
+            </View>
+            <View style={tw("flex flex-row mb-1")}>
+              <Text style={tw("w-28 text-sm font-bold text-dark text-left")}>Generated:</Text>
+              <Text style={tw("text-sm")}>
+                {generated.isValid() ? generated.format("MMMM D, YYYY") : "—"}
+              </Text>
+            </View>
+            <View style={tw("flex flex-row mb-1")}>
+              <Text style={tw("w-28 text-sm font-bold text-dark text-left")}>Valid Until:</Text>
+              <Text style={tw("text-sm")}>
+                {generated.isValid()
+                  ? generated.add(QUOTE_VALIDITY_DAYS, "day").format("MMMM D, YYYY")
+                  : "—"}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Line items */}
+        <View style={tw("mb-6")}>
+          <View style={[tw("flex flex-row py-3 px-4"), styles.tableHeader]}>
+            <View style={[styles.col1, tw("text-center")]}>
+              <Text style={tw("text-sm font-bold text-dark")}>#</Text>
+            </View>
+            <View style={[styles.col2, tw("pl-2")]}>
+              <Text style={tw("text-sm font-bold text-dark")}>DESCRIPTION</Text>
+            </View>
+            <View style={[styles.col3, tw("text-center")]}>
+              <Text style={tw("text-sm font-bold text-dark")}>QTY</Text>
+            </View>
+            <View style={[styles.col4, tw("text-right")]}>
+              <Text style={tw("text-sm font-bold text-dark")}>PRICE</Text>
+            </View>
+            <View style={[styles.col5, tw("text-right")]}>
+              <Text style={tw("text-sm font-bold text-dark")}>AMOUNT</Text>
+            </View>
+          </View>
+
+          {(data?.cart || []).map((item, index) => (
+            <View style={[tw("flex flex-row py-3 px-4"), styles.tableRow]} key={index}>
+              <View style={[styles.col1, tw("text-center")]}>
+                <Text style={tw("text-sm")}>{index + 1}</Text>
+              </View>
+              <View style={[styles.col2, tw("pl-2")]}>
+                <Text style={tw("text-sm")}>{item.title}</Text>
+              </View>
+              <View style={[styles.col3, tw("text-center")]}>
+                <Text style={tw("text-sm")}>{item.quantity}</Text>
+              </View>
+              <View style={[styles.col4, tw("text-right")]}>
+                <Text style={tw("text-sm")}>{fp(item.price)}</Text>
+              </View>
+              <View style={[styles.col5, tw("text-right")]}>
+                <Text style={tw("text-sm")}>{fp(item.price * item.quantity)}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* Summary */}
+        <View style={[styles.summaryCard, tw("ml-auto w-64")]}>
+          <View style={tw("flex flex-row justify-between mb-1")}>
+            <Text style={tw("text-sm text-muted-foreground")}>Subtotal:</Text>
+            <Text style={tw("text-sm")}>{fp(data?.subTotal)}</Text>
+          </View>
+
+          {data?.shippingCost > 0 && (
+            <View style={tw("flex flex-row justify-between mb-1")}>
+              <Text style={tw("text-sm text-muted-foreground")}>Shipping:</Text>
+              <Text style={tw("text-sm")}>{fp(data?.shippingCost)}</Text>
+            </View>
+          )}
+
+          {data?.discount > 0 && (
+            <View style={tw("flex flex-row justify-between mb-1")}>
+              <Text style={tw("text-sm text-muted-foreground")}>Discount:</Text>
+              <Text style={tw("text-sm text-green-600")}>-{fp(data?.discount)}</Text>
+            </View>
+          )}
+
+          <View style={styles.divider} />
+
+          <View style={tw("flex flex-row justify-between mt-2")}>
+            <Text style={tw("text-base font-bold text-dark")}>Estimated Total:</Text>
+            <Text style={tw("text-base font-bold text-primary")}>{fp(data?.total)}</Text>
+          </View>
+
+          {data?.taxAmount > 0 && (
+            <Text style={tw("text-xs text-muted-foreground text-right mt-1")}>
+              Includes {fp(data.taxAmount)} tax
+            </Text>
+          )}
+        </View>
+
+        {/* Footer */}
+        <View
+          style={[
+            tw("mt-auto pt-8"),
+            { position: "absolute", bottom: 40, left: 40, right: 40 },
+          ]}
+        >
+          <View style={styles.divider} />
+          <Text style={tw("text-xs text-center text-muted-foreground")}>
+            This is an estimate only, not a bill or a confirmed order — prices, stock, and
+            promotions may change before checkout is completed. No payment has been taken.
+          </Text>
+          <View style={tw("flex flex-row justify-between mt-2")}>
+            <Text style={tw("text-xs text-muted-foreground")}>
+              Generated on {generated.isValid() ? generated.format("MMMM D, YYYY") : "—"}
+            </Text>
+            <Text style={tw("text-xs text-muted-foreground")}>
+              {globalSetting?.company_name || "Company Name"} • {quoteRef}
+            </Text>
+          </View>
+        </View>
       </Page>
     </Document>
   );
