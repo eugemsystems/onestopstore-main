@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { FiFileText } from "react-icons/fi";
 
@@ -32,24 +32,35 @@ const DownloadQuotationButton = ({
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
 
-  if (!isClient || !items?.length) return null;
+  // PDFDownloadLink regenerates the PDF blob whenever the `document` element
+  // it's given changes identity — building a fresh `data` object (and a
+  // fresh `new Date()`) inline on every render meant it never saw the same
+  // props twice, so it silently re-rendered the PDF on every unrelated
+  // re-render of the checkout page (e.g. the notification-count poll),
+  // flooding the console and visibly stalling clicks. Only recompute when
+  // the actual cart/pricing values change.
+  const data = useMemo(
+    () => ({
+      cart: items,
+      subTotal,
+      shippingCost,
+      discount,
+      taxRate,
+      taxAmount,
+      total,
+      user_info: userInfo,
+      generatedAt: new Date().toISOString(),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [items, subTotal, shippingCost, discount, taxRate, taxAmount, total, userInfo],
+  );
 
-  const data = {
-    cart: items,
-    subTotal,
-    shippingCost,
-    discount,
-    taxRate,
-    taxAmount,
-    total,
-    user_info: userInfo,
-    generatedAt: new Date().toISOString(),
-  };
+  if (!isClient || !items?.length) return null;
 
   return (
     <PDFDownloadLink
       document={<QuotationPDF data={data} globalSetting={globalSetting} />}
-      fileName={`Quotation-${new Date().toISOString().slice(0, 10)}.pdf`}
+      fileName={`Quotation-${data.generatedAt.slice(0, 10)}.pdf`}
     >
       {({ loading }) => (
         <Button

@@ -90,7 +90,16 @@ const addOrder = async (orderInfo) => {
     };
 
     const order = await placeLaravelOrder(headers, orderPayload);
-    if (!order?.id) {
+    // Laravel returns two different shapes for a successful order, depending
+    // on payment method: offline methods (cod/bank_transfer/wallet) return
+    // the full order row (`id` present); online/redirect gateways (payfast,
+    // dpo, yoco, pesepay) return a slim { order_number, transaction_id, url,
+    // is_redirect } instead, with no `id` at all. Checking only `.id` meant
+    // every successful redirect-gateway order was reported back to the user
+    // as "Order could not be placed." even though Laravel had already
+    // created it — verified live: a real order (with a valid PayFast
+    // redirect URL) came back from Laravel with only `order_number` set.
+    if (!order?.id && !order?.order_number) {
       return { error: order?.message || "Order could not be placed." };
     }
 
@@ -98,6 +107,14 @@ const addOrder = async (orderInfo) => {
       order,
       orderInfo?.user_info?.name,
     );
+
+    // The redirect-gateway order response's field is actually named `url`
+    // (spread onto orderResponse via toTemplateOrderResponse's `...order`) —
+    // not `payment_url`/`redirect_url`, which this order response shape
+    // never has. Recognize it under its real name first.
+    if (order?.url && !orderResponse.payment_url) {
+      orderResponse.payment_url = order.url;
+    }
 
     // Online gateways: ensure a redirect URL is attached (order response
     // first, /rePayment as fallback) so the client can hand off to payment

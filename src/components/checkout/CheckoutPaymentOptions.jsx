@@ -55,10 +55,21 @@ const descriptionFor = (name) => {
   return "";
 };
 
+// DPO isn't wired up in this environment (no merchant credentials —
+// DPO_COMPANY_TOKEN etc. are all unset) and its return-URL misconfiguration
+// was breaking checkout entirely (see the return/cancel URL fix in
+// onestopstore-api's .env). Hidden here rather than only in admin settings,
+// so it stays hidden regardless of what storeSetting.payment_methods
+// contains until it's actually ready to accept real payments.
+const isDpo = (name) => {
+  const k = String(name || "").toLowerCase().replace(/[\s_-]/g, "");
+  return k.includes("pdozambia") || k.includes("dpozambia") || k.includes("dpo");
+};
+
 const CheckoutPaymentOptions = ({ methods, value, onChange }) => {
   return (
     <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
-      {(methods || []).map((method) => {
+      {(methods || []).filter((method) => !isDpo(method.name)).map((method) => {
         const isSelected = value === method.name;
         return (
           <label
