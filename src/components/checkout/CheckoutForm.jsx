@@ -13,6 +13,7 @@ import { FiFileText } from "react-icons/fi";
 import CartItem from "@components/cart/CartItem";
 import AddressSelector from "@components/checkout/AddressSelector";
 import CheckoutPaymentOptions from "@components/checkout/CheckoutPaymentOptions";
+import DownloadQuotationButton from "@components/checkout/DownloadQuotationButton";
 import useCheckoutSubmit from "@hooks/useCheckoutSubmit";
 import useUtilsFunction from "@hooks/useUtilsFunction";
 import { Input } from "@components/ui/input";
@@ -195,6 +196,19 @@ const CheckoutForm = ({ storeSetting, addresses, countries, wallet, point }) => 
                 onChange={setPaymentMethod}
               />
             </div>
+
+            {!isEmpty && (
+              <div className="mt-6">
+                <DownloadQuotationButton
+                  items={items}
+                  subTotal={subTotal}
+                  shippingCost={shippingTotal}
+                  discount={couponDiscount}
+                  taxAmount={taxTotal}
+                  total={total}
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-6 gap-4 lg:gap-6 mt-10">
               <div className="col-span-6 sm:col-span-3">
