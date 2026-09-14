@@ -13,11 +13,8 @@ const CategoryNavigateButton = ({ category }) => {
 
   // console.log("category", category);
 
-  // Laravel filters by the category's real `slug` (e.g. "wine-25202") —
-  // NOT a client-derived slug of the display name, which almost never
-  // matches and silently returns zero results.
   const handleCategoryClick = (id, slug) => {
-    router.push(`/search?category=${slug}&_id=${id}`);
+    router.push(`/collections/${slug}`);
   };
 
   return (

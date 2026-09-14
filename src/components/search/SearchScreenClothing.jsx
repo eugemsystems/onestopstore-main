@@ -39,6 +39,7 @@ const SearchScreenClothing = ({
   page: initialPage = 1,
   hasMore: initialHasMore = false,
   basePath = "/search",
+  pageTitle,
 }) => {
   const [mounted, setMounted] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
@@ -129,7 +130,7 @@ const SearchScreenClothing = ({
       <div className="bg-muted/50 border-b border-border">
         <div className="max-w-screen-2xl mx-auto px-3 sm:px-10 py-4 lg:py-12">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
-            {searchQuery ? `Results for "${searchQuery}"` : "Shop All"}
+            {pageTitle || (searchQuery ? `Results for "${searchQuery}"` : "Shop All")}
           </h1>
           <nav className="flex items-center gap-1.5 mt-3 text-sm text-muted-foreground">
             <Link
@@ -141,7 +142,7 @@ const SearchScreenClothing = ({
             </Link>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-foreground font-medium">
-              {basePath === "/shop" ? "Shop" : "Search"}
+              {pageTitle || (basePath === "/shop" ? "Shop" : "Search")}
             </span>
           </nav>
         </div>

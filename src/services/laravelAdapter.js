@@ -20,8 +20,8 @@ const num = (v) => {
 // for our own known API/media hosts; leave third-party URLs (Takealot CDN,
 // etc.) untouched.
 const HTTPS_ONLY_HOSTS = [
-  "api.shop.local",
-  "media.shop.local",
+  "api.onestopstore.local",
+  "media.onestopstore.local",
   "api.onestopstore.co.zw",
   "media.onestopstore.co.zw",
 ];
@@ -232,6 +232,7 @@ export function toTemplateProduct(p) {
     // Extra Raines fields the UI can progressively adopt
     raines: {
       estimatedDeliveryText: p.estimated_delivery_text || null,
+      isCod: !!p.is_cod,
       reviewsAvgRating: num(p.reviews_avg_rating ?? p.rating_count),
       reviewsCount: Number(p.reviews_count) || 0,
       isFeatured: !!p.is_featured,

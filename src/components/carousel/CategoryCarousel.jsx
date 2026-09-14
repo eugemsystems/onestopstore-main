@@ -22,12 +22,8 @@ const CategoryCarousel = ({ categories }) => {
 
   const { showingTranslateValue } = useUtilsFunction();
 
-  const handleCategoryClick = (id, category) => {
-    const category_name = showingTranslateValue(category)
-      ?.toLowerCase()
-      .replace(/[^A-Z0-9]+/gi, "-");
-
-    router.push(`/search?category=${category_name}&_id=${id}`);
+  const handleCategoryClick = (slug) => {
+    router.push(`/collections/${slug}`);
   };
 
   return (
@@ -97,9 +93,7 @@ const CategoryCarousel = ({ categories }) => {
           {categories[0]?.children?.map((category, i) => (
             <SwiperSlide key={i + 1} className="group">
               <div
-                onClick={() =>
-                  handleCategoryClick(category?._id, category.name)
-                }
+                onClick={() => handleCategoryClick(category?.slug)}
                 className="text-center cursor-pointer p-3 bg-background rounded-lg"
               >
                 <div className="bg-background p-2 mx-auto my-auto text-center w-10 h-10 rounded-full shadow-md">

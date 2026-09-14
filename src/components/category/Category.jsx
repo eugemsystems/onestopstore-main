@@ -19,6 +19,7 @@ const Category = ({ categories, categoryError, onClose }) => {
               <CategoryCard
                 key={category._id}
                 id={category._id}
+                slug={category.slug}
                 icon={category.icon}
                 onClose={onClose}
                 nested={category.children}

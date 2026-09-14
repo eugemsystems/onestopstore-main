@@ -8,10 +8,8 @@ const FeatureCategoryModernCard = ({ category, bgClass }) => {
   const router = useRouter();
   const { showingTranslateValue } = useUtilsFunction();
 
-  const handleCategoryClick = (id, categoryName) => {
-    const category_name = categoryName.toLowerCase().replace(/[^A-Z0-9]+/gi, "-");
-    const url = `/search?category=${category_name}&_id=${id}`;
-    router.push(url);
+  const handleCategoryClick = (slug) => {
+    router.push(`/collections/${slug}`);
   };
 
   const catName = showingTranslateValue(category?.name) || "Category";
@@ -23,7 +21,7 @@ const FeatureCategoryModernCard = ({ category, bgClass }) => {
   return (
     <li className="group h-full list-none">
       <div 
-        onClick={() => handleCategoryClick(category._id, showingTranslateValue(category?.name))}
+        onClick={() => handleCategoryClick(category?.slug)}
         className={`flex flex-col items-center justify-center w-full h-[180px] rounded-2xl bg-gradient-to-b ${bgClass} to-white dark:to-background cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 p-4 border border-border/30`}
       >
         <div className="flex-grow flex items-center justify-center mb-2 drop-shadow-md transition-transform duration-300 group-hover:scale-110">

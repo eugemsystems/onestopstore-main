@@ -223,7 +223,7 @@ const MegaMenuCategory = ({
                       </p>
                     </div>
                     <Link
-                      href={`/search?category=${activeCategory.slug}&_id=${activeCategory._id}`}
+                      href={`/collections/${activeCategory.slug}`}
                       className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors"
                     >
                       View All →
@@ -235,7 +235,7 @@ const MegaMenuCategory = ({
                       {activeCategory.children.map((sub) => (
                         <Link
                           key={sub._id}
-                          href={`/search?category=${sub.slug}&_id=${sub._id}`}
+                          href={`/collections/${sub.slug}`}
                           className="group/item flex items-center gap-3 rounded-lg border border-transparent p-3 hover:border-border hover:bg-muted/50 transition-all"
                         >
                           {sub.icon ? (

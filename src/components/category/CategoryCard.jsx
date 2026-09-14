@@ -11,7 +11,7 @@ import {
 
 import useUtilsFunction from "@hooks/useUtilsFunction";
 
-const CategoryCard = ({ title, icon, nested, id, onClose }) => {
+const CategoryCard = ({ title, icon, nested, id, slug, onClose }) => {
   const router = useRouter();
   const { showingTranslateValue } = useUtilsFunction();
 
@@ -21,10 +21,15 @@ const CategoryCard = ({ title, icon, nested, id, onClose }) => {
     show: false,
   });
 
-  // ✅ Search only when clicking on the category name
-  const handleSearch = (id, categoryName) => {
-    const name = categoryName.toLowerCase().replace(/[^A-Z0-9]+/gi, "-");
-    router.push(`/search?category=${name}&_id=${id}`);
+  // Navigate to the category's real /collections/{slug} page. Falls back to
+  // the old query-param search when a real slug isn't available (shouldn't
+  // happen for API-backed categories, but keeps this resilient).
+  const handleSearch = (id, categorySlug) => {
+    if (categorySlug) {
+      router.push(`/collections/${categorySlug}`);
+    } else {
+      router.push(`/search?_id=${id}`);
+    }
     if (onClose) {
       onClose();
     }
@@ -60,7 +65,7 @@ const CategoryCard = ({ title, icon, nested, id, onClose }) => {
 
         {/* ✅ Clicking name = search */}
         <div
-          onClick={() => handleSearch(id, title)}
+          onClick={() => handleSearch(id, slug)}
           className="ml-3 text-sm font-medium flex-1 cursor-pointer hover:text-primary text-foreground"
         >
           {title}
@@ -88,12 +93,7 @@ const CategoryCard = ({ title, icon, nested, id, onClose }) => {
                     <IoRemoveSharp />
                   </span>
                   <div
-                    onClick={() =>
-                      handleSearch(
-                        children._id,
-                        showingTranslateValue(children.name),
-                      )
-                    }
+                    onClick={() => handleSearch(children._id, children.slug)}
                     className="flex-1 text-sm text-foreground/80 hover:text-primary cursor-pointer"
                   >
                     {showingTranslateValue(children.name)}
@@ -112,12 +112,7 @@ const CategoryCard = ({ title, icon, nested, id, onClose }) => {
                 </div>
               ) : (
                 <div
-                  onClick={() =>
-                    handleSearch(
-                      children._id,
-                      showingTranslateValue(children.name),
-                    )
-                  }
+                  onClick={() => handleSearch(children._id, children.slug)}
                   className="flex items-center py-2 text-sm text-foreground/80 hover:text-primary cursor-pointer"
                 >
                   <span className="text-xs text-muted-foreground pr-2">
@@ -134,10 +129,7 @@ const CategoryCard = ({ title, icon, nested, id, onClose }) => {
                     <li
                       key={subChildren._id}
                       onClick={() =>
-                        handleSearch(
-                          subChildren._id,
-                          showingTranslateValue(subChildren.name),
-                        )
+                        handleSearch(subChildren._id, subChildren.slug)
                       }
                       className="flex items-center py-1.5 text-sm text-foreground/70 hover:text-primary cursor-pointer"
                     >

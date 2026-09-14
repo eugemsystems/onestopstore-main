@@ -1,6 +1,6 @@
 "use client";
 
-import { FiTruck, FiClock, FiCreditCard } from "react-icons/fi";
+import { FiTruck, FiClock, FiCreditCard, FiDollarSign } from "react-icons/fi";
 
 /**
  * Delivery + layby meta row for product cards. The legacy frontend used a
@@ -14,8 +14,9 @@ const ProductCardMeta = ({ product }) => {
   const r = product?.raines || {};
   const deliveryText = r.estimatedDeliveryText;
   const laybyEligible = r.laybyEligible;
+  const isCod = r.isCod;
 
-  if (!deliveryText && !laybyEligible) return null;
+  if (!deliveryText && !laybyEligible && !isCod) return null;
 
   const isBackOrder = deliveryText?.toLowerCase().includes("back order");
   // "Same day" and "tomorrow" are both fast-delivery promises -- the
@@ -59,6 +60,17 @@ const ProductCardMeta = ({ product }) => {
             <FiCreditCard size={9} />
           </span>
           Layby available
+        </span>
+      )}
+      {(deliveryText || laybyEligible) && isCod && (
+        <span className="h-3 w-px bg-border" aria-hidden="true" />
+      )}
+      {isCod && (
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-green-700 dark:text-green-500">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-green-500/10 text-green-700 dark:text-green-500">
+            <FiDollarSign size={9} />
+          </span>
+          Cash on Delivery
         </span>
       )}
     </div>

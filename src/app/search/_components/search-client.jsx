@@ -21,6 +21,7 @@ export default function SearchClient({
   error,
   storeLayout = "default",
   basePath = "/search",
+  pageTitle,
 }) {
   if (error) {
     return (
@@ -62,6 +63,7 @@ export default function SearchClient({
     page,
     hasMore,
     basePath,
+    pageTitle,
   };
 
   if (storeLayout === "clothing") {

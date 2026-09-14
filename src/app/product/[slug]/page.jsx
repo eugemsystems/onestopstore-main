@@ -71,12 +71,67 @@ async function ProductSlugContent({ slug }) {
   }
 
   return (
-    <ProductClient
-      product={product}
-      reviews={reviews || []}
-      attributes={attributes || []}
-      relatedProducts={relatedProducts || []}
-      error={null}
+    <>
+      <ProductJsonLd product={product} />
+      <ProductClient
+        product={product}
+        reviews={reviews || []}
+        attributes={attributes || []}
+        relatedProducts={relatedProducts || []}
+        error={null}
+      />
+    </>
+  );
+}
+
+// Product structured data (schema.org/Product) — lets search results show
+// price, availability and rating directly, without a duplicate client-side
+// copy (a single server-rendered block is the only one that ever exists).
+function ProductJsonLd({ product }) {
+  const storeDomain = (
+    process.env.NEXT_PUBLIC_STORE_DOMAIN || "https://onestopstore.local"
+  ).replace(/\/$/, "");
+
+  const name = product?.title?.en || product?.seo?.meta_title?.en || "";
+  const description =
+    product?.seo?.meta_description?.en || product?.description?.en || "";
+  const images = Array.isArray(product?.image) ? product.image.filter(Boolean) : [];
+
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name,
+    description,
+    image: images,
+    sku: product?.sku || undefined,
+    brand: product?.brand?.name
+      ? { "@type": "Brand", name: product.brand.name }
+      : undefined,
+    offers: {
+      "@type": "Offer",
+      url: `${storeDomain}/product/${product?.slug}`,
+      priceCurrency: "USD",
+      price: product?.prices?.price ?? undefined,
+      availability:
+        product?.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+    },
+    aggregateRating:
+      product?.total_reviews > 0
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: product?.average_rating || 0,
+            reviewCount: product.total_reviews,
+          }
+        : undefined,
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
   );
 }

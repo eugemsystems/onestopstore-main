@@ -68,6 +68,17 @@ const ProductHighlights = ({ product }) => {
         </li>
       )}
 
+      {r.isCod && (
+        <li className="flex items-center py-2">
+          <span className="text-lg text-green-700 mr-3">
+            <FiDollarSign />
+          </span>
+          <p className="font-sans leading-5 text-sm text-muted-foreground">
+            Cash on Delivery available
+          </p>
+        </li>
+      )}
+
       <li className="flex items-center py-2">
         <span className="text-lg text-muted-foreground mr-3">
           <FiHome />
