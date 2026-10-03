@@ -81,6 +81,11 @@ export function isRedirectGateway(method) {
  */
 export async function fetchGatewayRedirect(headers, orderNumber, method) {
   try {
+    // Same return_url/cancel_url base as the initial order placement --
+    // Laravel appends "/{order_number}" itself. Omitted previously, which
+    // for PayFast produced a bare "/{order_number}" return_url (no origin)
+    // and got rejected by the gateway as invalid.
+    const origin = String(process.env.NEXT_PUBLIC_STORE_DOMAIN || "").replace(/\/+$/, "");
     const res = await resilientFetch(`${baseURL}/rePayment`, {
       method: "POST",
       headers: jsonHeaders(headers),
@@ -90,6 +95,7 @@ export async function fetchGatewayRedirect(headers, orderNumber, method) {
         payment_method: method,
         wallet_balance: 0,
         points_amount: 0,
+        ...(origin ? { return_url: `${origin}/order`, cancel_url: `${origin}/checkout` } : {}),
       }),
     });
     const data = await handleResponse(res);

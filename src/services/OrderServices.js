@@ -67,6 +67,16 @@ const addOrder = async (orderInfo) => {
     );
     const totals = totalsRes?.total || {};
 
+    // Base URL for the payment gateway's post-payment redirect. Laravel
+    // appends "/{order_number}" to return_url itself (see PayFast::getIntent
+    // and similar), so this must be the bare origin + path, no trailing
+    // order number. Without this, gateways that don't have a server-side
+    // fallback configured (or whose fallback got clobbered by an empty
+    // explicit value -- confirmed live for PayFast, which produced a
+    // bare "/1018" return_url and was rejected as invalid) send the
+    // customer nowhere usable after paying.
+    const origin = String(process.env.NEXT_PUBLIC_STORE_DOMAIN || "").replace(/\/+$/, "");
+
     // Place the order
     const orderPayload = {
       consumer_id: orderInfo?.consumer_id,
@@ -87,6 +97,7 @@ const addOrder = async (orderInfo) => {
       tax_total: Number(totals.tax_total ?? 0),
       grand_total: Number(totals.total ?? 0),
       products,
+      ...(origin ? { return_url: `${origin}/order`, cancel_url: `${origin}/checkout` } : {}),
     };
 
     const order = await placeLaravelOrder(headers, orderPayload);
