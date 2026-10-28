@@ -123,6 +123,48 @@ function CartServerMerge() {
   return null;
 }
 
+const CART_OWNER_KEY = "cart-owner";
+
+/**
+ * The local (localStorage) cart belongs to the browser, not the account, so
+ * it would otherwise follow whoever signs in next and get merged into their
+ * server cart. Remember which account the local cart was last synced for and
+ * wipe it (locally only — never touching either server cart) when the account
+ * changes or the user signs out. A cart built while signed out is kept so it
+ * can still merge into the first account that signs in.
+ */
+function CartOwnerGuard({ skipServerClear }) {
+  const { data: session, status } = useSession();
+  const { emptyCart } = useCart();
+  const ownerKey = session?.user?.id ?? session?.user?.email ?? null;
+
+  useEffect(() => {
+    if (status === "loading") return;
+    let stored = null;
+    try {
+      stored = localStorage.getItem(CART_OWNER_KEY);
+    } catch {}
+
+    const wipe = () => {
+      skipServerClear.current = true;
+      emptyCart();
+      skipServerClear.current = false;
+    };
+
+    try {
+      if (status === "authenticated" && ownerKey) {
+        if (stored && stored !== String(ownerKey)) wipe();
+        localStorage.setItem(CART_OWNER_KEY, String(ownerKey));
+      } else if (status === "unauthenticated" && stored) {
+        wipe();
+        localStorage.removeItem(CART_OWNER_KEY);
+      }
+    } catch {}
+  }, [status, ownerKey, emptyCart, skipServerClear]);
+
+  return null;
+}
+
 /**
  * Wraps react-use-cart's CartProvider with the hooks needed to mirror every
  * local mutation to the Laravel /cart API for signed-in users. localStorage
@@ -181,10 +223,12 @@ export default function CartSyncProvider({ children }) {
     if (token && serverId) deleteServerCartItem(token, serverId);
   }, []);
 
+  const skipServerClear = useRef(false);
+
   const onEmptyCart = useCallback(() => {
     const token = tokenRef.current;
     serverIdMap.current.clear();
-    if (token) clearServerCart(token);
+    if (token && !skipServerClear.current) clearServerCart(token);
   }, []);
 
   return (
@@ -195,6 +239,7 @@ export default function CartSyncProvider({ children }) {
         onItemRemove={onItemRemove}
         onEmptyCart={onEmptyCart}
       >
+        <CartOwnerGuard skipServerClear={skipServerClear} />
         <CartServerMerge />
         {children}
       </CartProvider>

@@ -14,7 +14,7 @@ import Image from "next/image";
 
 const Cart = ({ setOpen }) => {
   const router = useRouter();
-  const { isEmpty, items, cartTotal } = useCart();
+  const { isEmpty, items, cartTotal, emptyCart } = useCart();
   const { formatPrice } = useUtilsFunction();
 
   const userInfo = getUserSession();
@@ -87,6 +87,18 @@ const Cart = ({ setOpen }) => {
             </span>
             <span>{formatPrice(cartTotal)}</span>
           </p>
+
+          {!isEmpty && (
+            <button
+              type="button"
+              onClick={() => {
+                if (window.confirm("Remove all items from your cart?")) emptyCart();
+              }}
+              className="mt-3 w-full text-center text-sm text-muted-foreground hover:text-red-500 transition-colors"
+            >
+              Clear cart
+            </button>
+          )}
 
           <div className="flex space-x-3 mt-5">
             <Link
