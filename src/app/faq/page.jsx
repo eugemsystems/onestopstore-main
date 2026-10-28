@@ -78,7 +78,7 @@ const Faq = async () => {
     {
       question: "How do I contact customer service?",
       answer:
-        "Reach us by phone at +263 77 941 1028, by email at support@onestopstore.co.zw, or through live chat on the website.",
+        "Reach us by phone at +263790060718, by email at admin@onestopstore.co.zw, or through live chat on the website.",
     },
   ];
 

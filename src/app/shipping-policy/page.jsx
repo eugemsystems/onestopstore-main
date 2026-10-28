@@ -25,14 +25,14 @@ const SHIPPING_POLICY_HTML = `
   <p>We will notify you of a failed delivery, i.e. when no one can be reached at the specified delivery address to receive and sign for the goods at the scheduled time. We will reschedule the delivery as soon as possible.</p>
 
   <h3>What If My Items Are Damaged, Faulty Or Incorrectly Delivered?</h3>
-  <p>In the regrettable event that you receive a damaged product, please notify us within 24 hours of receipt of delivery at <a href="mailto:support@onestopstore.co.zw">support@onestopstore.co.zw</a>. We will do our utmost to have the damaged product collected and a new product delivered to you within 3 business days.</p>
+  <p>In the regrettable event that you receive a damaged product, please notify us within 24 hours of receipt of delivery on +263790060718 or <a href="mailto:admin@onestopstore.co.zw">admin@onestopstore.co.zw</a>. We will do our utmost to have the damaged product collected and a new product delivered to you within 3 business days.</p>
 
   <h3>What If I Receive The Incorrect Items Or Quantity Of Products?</h3>
-  <p>Should the incorrect items or quantity of items be delivered to you, please notify us immediately at <a href="mailto:support@onestopstore.co.zw">support@onestopstore.co.zw</a> so that we can rectify the situation. Our team will collect the incorrect items and replace them as soon as possible.</p>
+  <p>Should the incorrect items or quantity of items be delivered to you, please notify us immediately on +263790060718 or <a href="mailto:admin@onestopstore.co.zw">admin@onestopstore.co.zw</a> so that we can rectify the situation. Our team will collect the incorrect items and replace them as soon as possible.</p>
 
   <h3>Returns &amp; Refunds Process</h3>
   <p>We offer a full returns and exchanges policy &mdash; see our <a href="/return-policy">Return Policy</a> for details. You may return or exchange goods subject to producing the original receipt and ensuring the product is in its original packaging and condition. Should the product not be in its original packaging, a handling fee of up to 20% of the product&rsquo;s value may be charged, as permitted under the Consumer Protection Act.</p>
-  <p>Refunds can take up to 10 days to reflect in your bank account. Should you not receive your refund within 10 days, please contact us at <a href="mailto:support@onestopstore.co.zw">support@onestopstore.co.zw</a>.</p>
+  <p>Refunds can take up to 10 days to reflect in your bank account. Should you not receive your refund within 10 days, please contact us on +263790060718 or <a href="mailto:admin@onestopstore.co.zw">admin@onestopstore.co.zw</a>.</p>
 `;
 
 const ShippingPolicy = async () => {

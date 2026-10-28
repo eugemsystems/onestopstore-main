@@ -164,10 +164,10 @@ export const RAINES_CUSTOMIZATION = {
     block2_sub_title1: { en: "Terms & Conditions" },
     block2_sub_link2: "/privacy-policy",
     block2_sub_title2: { en: "Privacy Policy" },
-    block2_sub_link3: "/auctions",
-    block2_sub_title3: { en: "Auctions" },
-    block2_sub_link4: "/compare",
-    block2_sub_title4: { en: "Compare" },
+    block2_sub_link3: "/return-policy",
+    block2_sub_title3: { en: "Return Policy" },
+    block2_sub_link4: "/shipping-policy",
+    block2_sub_title4: { en: "Shipping Policy" },
 
     block3_status: true,
     block3_title: { en: "My Account" },
@@ -185,8 +185,8 @@ export const RAINES_CUSTOMIZATION = {
     block4_address: {
       en: "Shop No. 6 Rhodesville Shops, No 32 Rhodesville Avenue, Greendale, Harare",
     },
-    block4_phone: "+263 77 320 7758",
-    block4_email: "support@onestopstore.co.zw",
+    block4_phone: "+263790060718",
+    block4_email: "admin@onestopstore.co.zw",
 
     payment_method_status: true,
     bottom_contact_status: true,
@@ -268,7 +268,7 @@ export const RAINES_CUSTOMIZATION = {
         <h4>M. Changes To This Privacy Policy</h4>
         <p>This Privacy Policy replaces previous versions. Updates may occur from time to time. The version displayed on our Platforms applies to you.</p>
 
-        <p>Questions about this Privacy Policy can be sent to <a href="mailto:support@onestopstore.co.zw">support@onestopstore.co.zw</a>.</p>
+        <p>Questions about this Privacy Policy can be sent to <a href="mailto:admin@onestopstore.co.zw">admin@onestopstore.co.zw</a>.</p>
       `,
     },
   },
@@ -360,7 +360,7 @@ export const RAINES_CUSTOMIZATION = {
         <h4>11. For Further Assistance</h4>
         <p>Please refer to our Help Centre under &ldquo;Product and Stock,&rdquo; which is incorporated by reference.</p>
 
-        <p>Questions about these Terms &amp; Conditions can be sent to <a href="mailto:support@onestopstore.co.zw">support@onestopstore.co.zw</a>.</p>
+        <p>Questions about these Terms &amp; Conditions can be sent to <a href="mailto:admin@onestopstore.co.zw">admin@onestopstore.co.zw</a>.</p>
       `,
     },
   },
@@ -378,7 +378,7 @@ export const RAINES_GLOBAL = {
   meta_url: "https://onestopstore.co.zw",
   address: "Harare, Zimbabwe",
   contact: "",
-  email: "support@onestopstore.co.zw",
+  email: "admin@onestopstore.co.zw",
   logo: "/logo/raines-color.png",
   invoice_logo: "/logo/raines-color.png",
   vat_number: "",

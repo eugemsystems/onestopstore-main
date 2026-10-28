@@ -95,7 +95,7 @@ const RETURN_POLICY_HTML = `
     <li>One Stop Store reserves the right to inspect the goods before a return is approved. Under no circumstances will direct exchanges be conducted before assessment and approval has been completed.</li>
   </ol>
 
-  <p>Questions about returns can be sent to <a href="mailto:support@onestopstore.co.zw">support@onestopstore.co.zw</a>.</p>
+  <p>Questions about returns can be sent to <a href="mailto:admin@onestopstore.co.zw">admin@onestopstore.co.zw</a>.</p>
 `;
 
 const ReturnPolicy = async () => {

@@ -1,5 +1,6 @@
 //internal imports
 import React from "react";
+import Script from "next/script";
 import "@styles/custom.css";
 import Providers from "./provider";
 import { resolveStoreLayout } from "@lib/resolveStoreLayout";
@@ -189,6 +190,18 @@ export default async function RootLayout({ children }) {
       className=""
       suppressHydrationWarning
     >
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18538986042"
+          strategy="afterInteractive"
+        />
+        <Script id="google-tag" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-18538986042');`}
+        </Script>
+      </head>
       <body
         suppressHydrationWarning
         className="bg-background text-foreground antialiased"
