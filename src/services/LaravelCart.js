@@ -66,6 +66,7 @@ export async function replaceServerCartItem(token, { id, product_id, variation_i
       headers: jsonHeaders(token),
       body: JSON.stringify({ id, product_id, variation_id: variation_id ?? null, quantity }),
     });
+    if (res.status === 404) return "missing";
     return res.ok;
   } catch {
     return false;

@@ -14,6 +14,12 @@ const CartItem = ({ item }) => {
   const { handleIncreaseQuantity } = useAddToCart();
   const { formatPrice } = useUtilsFunction();
 
+  // Older merged lines may carry an i18n object ({ en }) instead of a string.
+  const title =
+    typeof item.title === "string"
+      ? item.title
+      : item.title?.en || Object.values(item.title || {})[0] || "";
+
   const hasDiscount = item.originalPrice > item.price;
   const savings = hasDiscount ? (item.originalPrice - item.price) * item.quantity : 0;
 
@@ -26,7 +32,7 @@ const CartItem = ({ item }) => {
             width={40}
             height={40}
             src={item.image}
-            alt={item.title}
+            alt={title}
             className="size-20 flex-none rounded-lg bg-muted object-cover border border-border/50"
           />
         </Link>
@@ -38,7 +44,7 @@ const CartItem = ({ item }) => {
               href={`/product/${item.slug || item.id}`}
               className="truncate text-sm font-medium text-foreground line-clamp-1 hover:text-primary transition-colors"
             >
-              {item.title}
+              {title}
             </Link>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
               <span>Item Price {formatPrice(item.price)}</span>

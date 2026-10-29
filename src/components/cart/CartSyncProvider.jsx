@@ -95,9 +95,18 @@ function CartServerMerge() {
         ? templateProduct.variants.find((v) => v.id === variationId)
         : null;
 
+      // Same shape ProductCard adds locally: flat string title, and none of
+      // the heavy/object fields (rendering an {en: ...} title crashes the cart).
+      const { variants, categories, description, campaign: _c, ...slim } = templateProduct;
+      const title =
+        typeof slim.title === "string"
+          ? slim.title
+          : slim.title?.en || Object.values(slim.title || {})[0] || row.product.name || "";
+
       addItem(
         {
-          ...templateProduct,
+          ...slim,
+          title,
           id: localId,
           price: variant ? variant.price : templateProduct.prices.price,
           variant: variant || null,
@@ -204,6 +213,16 @@ export default function CartSyncProvider({ children }) {
         product_id,
         variation_id,
         quantity: item.quantity,
+      }).then((result) => {
+        // The mapped row no longer exists for this account (stale id) —
+        // recreate the line with the current absolute quantity.
+        if (result !== "missing") return;
+        serverIdMap.current.delete(item.id);
+        createServerCartItem(token, { product_id, variation_id, quantity: item.quantity }).then(
+          (row) => {
+            if (row?.id) serverIdMap.current.set(item.id, row.id);
+          },
+        );
       });
     } else {
       // Line was added while signed out and hasn't been through the login
