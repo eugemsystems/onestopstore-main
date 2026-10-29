@@ -20,7 +20,7 @@ const CheckoutCartScreen = () => {
   const userInfo = getUserSession();
   const { storeCustomization } = useSetting();
   const { showingTranslateValue, formatPrice } = useUtilsFunction();
-  const { isEmpty, items, cartTotal } = useCart();
+  const { isEmpty, items, cartTotal, emptyCart } = useCart();
 
   const checkout = storeCustomization?.checkout;
 
@@ -120,6 +120,15 @@ const CheckoutCartScreen = () => {
                   Checkout
                 </button>
               </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm("Remove all items from your cart?")) emptyCart();
+                }}
+                className="mt-3 w-full inline-flex items-center justify-center rounded-lg transition-colors text-sm sm:text-base font-semibold py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-black focus:outline-none"
+              >
+                Clear cart
+              </button>
             </div>
           </div>
         </div>

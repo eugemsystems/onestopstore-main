@@ -88,18 +88,6 @@ const Cart = ({ setOpen }) => {
             <span>{formatPrice(cartTotal)}</span>
           </p>
 
-          {!isEmpty && (
-            <button
-              type="button"
-              onClick={() => {
-                if (window.confirm("Remove all items from your cart?")) emptyCart();
-              }}
-              className="mt-3 w-full text-center text-sm text-muted-foreground hover:text-red-500 transition-colors"
-            >
-              Clear cart
-            </button>
-          )}
-
           <div className="flex space-x-3 mt-5">
             <Link
               href="/checkout-cart"
@@ -115,6 +103,17 @@ const Cart = ({ setOpen }) => {
               Checkout
             </button>
           </div>
+          {!isEmpty && (
+            <button
+              type="button"
+              onClick={() => {
+                if (window.confirm("Remove all items from your cart?")) emptyCart();
+              }}
+              className="mt-3 w-full inline-flex items-center justify-center rounded-lg transition-colors text-sm sm:text-base font-semibold py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-black focus:outline-none"
+            >
+              Clear cart
+            </button>
+          )}
         </div>
       </div>
     </>

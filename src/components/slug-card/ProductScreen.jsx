@@ -356,6 +356,14 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                 <div className="flex items-center mt-4">
                   <div className="flex items-center justify-between space-s-3 sm:space-s-4 w-full">
                     <div>
+                      {(matchedVariant?.sku || product?.sku) && (
+                        <span className="block font-semibold py-1 text-sm">
+                          <span className="text-muted-foreground">SKU:</span>{" "}
+                          <span className="text-foreground font-medium ml-2">
+                            {matchedVariant?.sku || product.sku}
+                          </span>
+                        </span>
+                      )}
                       <span className=" font-semibold py-1 text-sm d-block">
                         <span className="text-muted-foreground">Category:</span>{" "}
                         <Link
