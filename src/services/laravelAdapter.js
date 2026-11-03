@@ -232,6 +232,13 @@ export function toTemplateProduct(p) {
     // Extra Raines fields the UI can progressively adopt
     raines: {
       estimatedDeliveryText: p.estimated_delivery_text || null,
+      // Standard shipping price (USD, converted for display by the price formatter). null = no
+      // price set -> nothing shown; 0 = free. The detail endpoint returns it inside
+      // `shipping_options`; the raw column is the fallback.
+      standardShippingPrice: (() => {
+        const v = p.shipping_options?.standard_shipping_price ?? p.standard_shipping_price;
+        return v === null || v === undefined || v === "" || Number.isNaN(Number(v)) ? null : Number(v);
+      })(),
       isCod: !!p.is_cod,
       reviewsAvgRating: num(p.reviews_avg_rating ?? p.rating_count),
       reviewsCount: Number(p.reviews_count) || 0,

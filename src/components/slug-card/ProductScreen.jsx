@@ -46,7 +46,7 @@ import MainModal from "@components/modal/MainModal";
 const ProductScreen = ({ product, reviews, relatedProducts }) => {
   const router = useRouter();
   const { globalSetting, storeCustomization } = useSetting();
-  const { showingTranslateValue } = useUtilsFunction();
+  const { showingTranslateValue, formatPrice } = useUtilsFunction();
   const {
     item,
     setItem,
@@ -248,7 +248,11 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                   />
                 </div>
               </div>
-              <div className="flex items-center mb-8">
+              <div
+                className={`flex items-center ${
+                  product?.raines?.standardShippingPrice != null ? "mb-1.5" : "mb-8"
+                }`}
+              >
                 <Price
                   price={price}
                   product={product}
@@ -260,6 +264,20 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                   <Discount slug product={product} discount={discount} />
                 </span>
               </div>
+              {product?.raines?.standardShippingPrice != null && (
+                <p className="mb-8 text-sm text-muted-foreground">
+                  {product.raines.standardShippingPrice > 0 ? (
+                    <>
+                      Standard shipping:{" "}
+                      <span className="font-semibold text-foreground">
+                        {formatPrice(product.raines.standardShippingPrice)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="font-semibold text-foreground">Free standard shipping</span>
+                  )}
+                </p>
+              )}
 
               {product?.raines?.isOnSale && product?.raines?.saleExpiredAt && (
                 <SaleCountdown endDate={product.raines.saleExpiredAt} />
