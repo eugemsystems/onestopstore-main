@@ -12,6 +12,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import Price from "@components/common/Price";
 import Tags from "@components/common/Tags";
 import ProductHighlights from "@components/slug-card/ProductHighlights";
+import DeliveryBadge from "@components/slug-card/DeliveryBadge";
 import Discount from "@components/common/Discount";
 import ProductCard from "@components/product/ProductCard";
 import VariantList from "@components/variants/VariantList";
@@ -47,6 +48,8 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
   const router = useRouter();
   const { globalSetting, storeCustomization } = useSetting();
   const { showingTranslateValue, formatPrice } = useUtilsFunction();
+  const hasShippingLine = product?.raines?.standardShippingPrice != null;
+  const deliveryText = product?.raines?.estimatedDeliveryText || null;
   const {
     item,
     setItem,
@@ -250,7 +253,7 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
               </div>
               <div
                 className={`flex items-center ${
-                  product?.raines?.standardShippingPrice != null ? "mb-1.5" : "mb-8"
+                  hasShippingLine || deliveryText ? "mb-1.5" : "mb-8"
                 }`}
               >
                 <Price
@@ -264,8 +267,8 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                   <Discount slug product={product} discount={discount} />
                 </span>
               </div>
-              {product?.raines?.standardShippingPrice != null && (
-                <p className="mb-8 text-sm text-muted-foreground">
+              {hasShippingLine && (
+                <p className={`${deliveryText ? "mb-2" : "mb-8"} text-sm text-muted-foreground`}>
                   {product.raines.standardShippingPrice > 0 ? (
                     <>
                       Standard shipping:{" "}
@@ -277,6 +280,11 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                     <span className="font-semibold text-foreground">Free standard shipping</span>
                   )}
                 </p>
+              )}
+              {deliveryText && (
+                <div className="mb-8">
+                  <DeliveryBadge text={deliveryText} />
+                </div>
               )}
 
               {product?.raines?.isOnSale && product?.raines?.saleExpiredAt && (
