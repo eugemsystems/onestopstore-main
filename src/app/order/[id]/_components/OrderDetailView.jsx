@@ -165,6 +165,45 @@ const OrderDetailView = ({ orderId, order, error, paymentMethods, statusParam })
     })();
   }, [orderNumericId]);
 
+  // Google Ads Purchase conversion -- this page is the "thank you" landing
+  // for every checkout path (instant redirect for COD/offline methods, and
+  // the gateway return_url for PayFast/DPO/etc.), but it's also the general
+  // "view a past order" page reachable anytime from order history. Firing
+  // unconditionally would re-report the same purchase on every revisit, so
+  // gate it with a one-time-per-order localStorage flag (in addition to the
+  // dedup Google Ads itself does on transaction_id) and skip cancelled orders.
+  useEffect(() => {
+    if (typeof window === "undefined" || !order) return;
+    const txId = String(order?.orderId ?? order?._id ?? orderId ?? "");
+    if (!txId) return;
+    const slug = normalizeKey(order?.order_status?.slug || order?.status);
+    if (slug === "cancelled") return;
+
+    const storageKey = `gtag_purchase_sent_${txId}`;
+    try {
+      if (window.localStorage.getItem(storageKey)) return;
+    } catch {
+      // localStorage unavailable (private mode, etc.) -- fire once per
+      // mount instead of skipping conversion tracking entirely.
+    }
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push([
+      "event",
+      "conversion",
+      {
+        send_to: "AW-18538986042/ARPjCLLD3qodELr0iYhF",
+        value: Number(order?.total ?? 0),
+        currency: order?.currency || "USD",
+        transaction_id: txId,
+      },
+    ]);
+
+    try {
+      window.localStorage.setItem(storageKey, "1");
+    } catch {}
+  }, [order, orderId]);
+
   const markReturned = (productId) => {
     setReturnedIds((prev) => [...prev, String(productId)]);
   };
