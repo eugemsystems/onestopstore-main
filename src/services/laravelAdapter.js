@@ -92,7 +92,12 @@ export function toTemplateProduct(p) {
         .filter(Boolean)
     : [];
 
-  const images = [thumb, ...galleries].filter(Boolean);
+  // Gallery order is set by drag & drop in the admin and the API already returns it in that
+  // order. The thumbnail is normally one of the gallery images, so when it is, keep the admin's
+  // order as-is (otherwise it would jump to the front and show twice); only prepend it when it
+  // isn't part of the gallery at all.
+  const images = [...new Set(thumb && !galleries.includes(thumb) ? [thumb, ...galleries] : galleries)].filter(Boolean);
+  if (images.length === 0 && thumb) images.push(thumb);
 
   const categories = Array.isArray(p.categories)
     ? p.categories.map((c) => ({
