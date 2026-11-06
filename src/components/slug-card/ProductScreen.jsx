@@ -150,7 +150,7 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                       fill
                       priority
                       sizes="(max-width: 768px) 100vw, 500px"
-                      className="object-cover"
+                      className="object-contain"
                     />
                     <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/70 text-foreground">
                       <ZoomIn size={18} />
