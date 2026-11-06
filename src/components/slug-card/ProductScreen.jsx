@@ -174,16 +174,23 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
               modalOpen={zoomOpen}
               handleCloseModal={() => setZoomOpen(false)}
             >
-              <div className="relative aspect-square w-full max-w-2xl mx-auto">
-                <Image
+              <div className="flex items-center justify-center">
+                {/* Plain <img>, not next/image's `fill` -- `fill` requires a
+                    fixed-aspect-ratio box, which forced every image (most
+                    product photos aren't square) to be squeezed and shrunk
+                    via object-contain to fit that square, leaving a lot of
+                    empty space ("zoomed out"). Sizing by the image's own
+                    natural dimensions, capped only by the viewport, lets it
+                    scale up to fill as much of the available space as its
+                    real aspect ratio allows -- on both desktop and mobile. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={
                     activeImage ||
                     "https://res.cloudinary.com/ahossain/image/upload/v1655097002/placeholder_kvepfp.png"
                   }
                   alt="product zoomed"
-                  fill
-                  sizes="(max-width: 768px) 90vw, 700px"
-                  className="object-contain"
+                  className="max-h-[80vh] max-w-full w-auto h-auto object-contain rounded-lg"
                 />
               </div>
               {images.length > 1 && (
