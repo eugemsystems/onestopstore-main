@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Minus, Plus, X, ZoomIn } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import { BsTruck } from "react-icons/bs";
 
 //internal import
 
@@ -275,18 +276,19 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                 </span>
               </div>
               {hasShippingLine && (
-                <p className={`${deliveryText ? "mb-2" : "mb-8"} text-sm text-muted-foreground`}>
+                <div className={deliveryText ? "mb-2" : "mb-8"}>
                   {product.raines.standardShippingPrice > 0 ? (
-                    <>
-                      Standard shipping:{" "}
-                      <span className="font-semibold text-foreground">
-                        {formatPrice(product.raines.standardShippingPrice)}
-                      </span>
-                    </>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border bg-blue-700 border-blue-800 px-3 py-1 text-xs font-semibold text-white">
+                      <BsTruck className="text-sm" />
+                      Standard shipping: {formatPrice(product.raines.standardShippingPrice)}
+                    </span>
                   ) : (
-                    <span className="font-semibold text-foreground">Free standard shipping</span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border bg-green-700 border-green-800 px-3 py-1 text-xs font-semibold text-white">
+                      <BsTruck className="text-sm" />
+                      Free standard shipping
+                    </span>
                   )}
-                </p>
+                </div>
               )}
               {deliveryText && (
                 <div className="mb-8">
