@@ -1,12 +1,10 @@
-import Image from "next/image";
-
 //internal import
 import PageHeader from "@components/header/PageHeader";
 
 export const metadata = {
   title: "About Us",
   description:
-    "OneStopStore is Zimbabwe's online marketplace for appliances, electronics and everyday goods, with fast delivery in Harare and Bulawayo and nationwide shipping.",
+    "OneStopStore is Zimbabwe's online marketplace for appliances, electronics and everyday goods, with fast delivery in Harare and nationwide shipping.",
   keywords: ["about", "our story", "OneStopStore", "Zimbabwe online store"],
 };
 
@@ -17,7 +15,7 @@ const AboutUs = () => {
 
       <div className="bg-background text-foreground">
         <div className="max-w-screen-2xl mx-auto lg:py-20 py-10 px-4 sm:px-10">
-          <div className="grid grid-flow-row lg:grid-cols-2 gap-4 lg:gap-16 items-center">
+          <div className="grid grid-flow-row gap-4 lg:gap-16 items-center">
             <div>
               <h3 className="text-xl lg:text-3xl mb-2 font-semibold text-foreground">
                 Your one-stop shop for everything you need
@@ -32,7 +30,7 @@ const AboutUs = () => {
                 </p>
                 <p className="mt-4">
                   We&rsquo;re based in Harare, with same-day dispatch on
-                  in-stock items across Harare and Bulawayo, and delivery
+                  in-stock items across Harare, and delivery
                   nationwide. Whether you&rsquo;re furnishing a new home,
                   replacing a broken appliance, or just looking for a good
                   deal, our goal is to make it simple, affordable and
@@ -61,22 +59,13 @@ const AboutUs = () => {
                     Fast, Reliable Delivery
                   </h4>
                   <p className="mb-0 text-muted-foreground leading-7">
-                    Same-day dispatch on in-stock items in Harare and
-                    Bulawayo, with nationwide delivery across Zimbabwe.
+                    Same-day dispatch on in-stock items in Harare,
+                    with nationwide delivery across Zimbabwe.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-10 lg:mt-0">
-              <Image
-                width={920}
-                height={750}
-                src="/about-us.jpg"
-                alt="OneStopStore"
-                className="rounded-lg"
-              />
-            </div>
           </div>
 
           <div className="mt-10 lg:mt-16 text-base text-muted-foreground leading-7">
@@ -93,16 +82,6 @@ const AboutUs = () => {
               of what Zimbabwean shoppers are actually looking for. Thank
               you for shopping with us.
             </p>
-          </div>
-
-          <div className="mt-10 lg:mt-12 flex flex-col sm:grid gap-4">
-            <Image
-              width={1920}
-              height={570}
-              src="/about-banner.jpg"
-              alt="OneStopStore"
-              className="block rounded-lg"
-            />
           </div>
         </div>
       </div>

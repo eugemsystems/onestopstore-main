@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import Banner from "@components/banner/Banner";
 import CardTwo from "@components/cta-card/CardTwo";
 import OfferCard from "@components/offer/OfferCard";
 import StickyCart from "@components/cart/StickyCart";
@@ -44,11 +43,6 @@ const HomeDefault = ({
                 <OfferCard attributes={attributes} />
               </Suspense>
             </div>
-          </div>
-
-          {/* Banner */}
-          <div className="bg-primary/10 dark:bg-primary/5 px-10 py-6 rounded-xl mt-6 border border-primary/10">
-            <Banner storeCustomizationSetting={storeCustomizationSetting} />
           </div>
         </div>
       </div>

@@ -38,7 +38,7 @@ const Faq = async () => {
     {
       question: "How long does shipping take?",
       answer:
-        "We offer same-day dispatch in Harare and Bulawayo for in-stock appliances and electronics. Delivery generally takes 3-7 working days Monday to Friday, subject to payment confirmation before 12h00 — see our Shipping Policy for full details.",
+        "We offer same-day dispatch in Harare for in-stock appliances and electronics. Delivery generally takes 3-7 working days Monday to Friday, subject to payment confirmation before 12h00 — see our Shipping Policy for full details.",
     },
     {
       question: "What is your return policy?",
@@ -56,9 +56,9 @@ const Faq = async () => {
         "We accept major cards and a range of local and regional payment options. All payments are processed securely at checkout.",
     },
     {
-      question: "Do you deliver outside Harare and Bulawayo?",
+      question: "Do you deliver outside Harare?",
       answer:
-        "Yes — we deliver nationwide across Zimbabwe. Delivery timeframes may be longer outside our main hubs; free delivery applies within Harare and Bulawayo, see our Shipping Policy for details.",
+        "Yes — we deliver nationwide across Zimbabwe. Delivery timeframes may be longer outside Harare; free delivery applies within Harare, see our Shipping Policy for details.",
     },
     {
       question: "Can I change or cancel my order?",
