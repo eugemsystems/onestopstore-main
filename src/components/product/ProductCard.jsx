@@ -34,6 +34,7 @@ import ProductLink from "@components/common/ProductLink";
 import ProductVariantIndicator from "@components/product/ProductVariantIndicator";
 import ProductCardMeta from "@components/product/ProductCardMeta";
 import { getFromPrice } from "@utils/getFromPrice";
+import MoreOptionsBadge from "@components/product/MoreOptionsBadge";
 import { canAddToCart } from "@utils/cartGuards";
 
 const ProductCard = ({ product, attributes }) => {
@@ -84,7 +85,7 @@ const ProductCard = ({ product, attributes }) => {
       : p.stock;
     if (stockToCheck < 1) return notifyError("Insufficient stock!");
 
-    if (p?.variants?.length > 0) {
+    if (p?.variants?.length > 0 || p?.deliveryOptions?.length > 0) {
       // Variant products can't be added straight from the card/grid — the
       // user must open the product page and choose a variation there first.
       router.push(`/product/${product?.slug}`);
@@ -319,6 +320,13 @@ const ProductCard = ({ product, attributes }) => {
               isFrom={!isInCampaign && fromPrice.isFrom}
             />
           </div>
+
+          {/* Several prices for different delivery times */}
+          {product?.deliveryOptions?.length > 0 && (
+            <div className="mb-2">
+              <MoreOptionsBadge />
+            </div>
+          )}
 
           {/* Stock status — only shown when NOT simply in stock */}
           {r.stockStatus && r.stockStatus !== "in_stock" && (

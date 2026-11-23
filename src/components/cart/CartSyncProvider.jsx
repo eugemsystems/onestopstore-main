@@ -31,14 +31,35 @@ const ServerIdMapContext = createContext(null);
  */
 function parseCartLine(item) {
   const productIdStr = String(item._id ?? item.id);
-  const rawId = String(item.id);
+  let rawId = String(item.id);
+
+  // Delivery option: "...-d<optionId>" suffix (also stored explicitly on the item)
+  let delivery_option_id = item.deliveryOptionId ?? item.deliveryOption?.id ?? null;
+  const optMatch = rawId.match(/-d(\d+)$/);
+  if (optMatch) {
+    if (delivery_option_id == null) delivery_option_id = Number(optMatch[1]);
+    rawId = rawId.slice(0, -optMatch[0].length);
+  }
+
   let variation_id = null;
   if (rawId.length > productIdStr.length && rawId.startsWith(`${productIdStr}-`)) {
     const suffix = rawId.slice(productIdStr.length + 1);
     const parsed = Number(suffix);
     if (Number.isFinite(parsed)) variation_id = parsed;
   }
-  return { product_id: Number(productIdStr), variation_id };
+  return {
+    product_id: Number(productIdStr),
+    variation_id,
+    delivery_option_id: delivery_option_id != null ? Number(delivery_option_id) : null,
+  };
+}
+
+/** Inverse of parseCartLine: the local cart line id for a product/variation/delivery option. */
+function buildLocalId(product_id, variation_id, delivery_option_id) {
+  return (
+    (variation_id ? `${product_id}-${variation_id}` : String(product_id)) +
+    (delivery_option_id ? `-d${delivery_option_id}` : "")
+  );
 }
 
 /**
@@ -67,7 +88,8 @@ function CartServerMerge() {
 
     for (const row of serverItems) {
       const variationId = row.variation_id ?? null;
-      const localId = variationId ? `${row.product_id}-${variationId}` : String(row.product_id);
+      const deliveryOptionId = row.delivery_option_id ?? null;
+      const localId = buildLocalId(row.product_id, variationId, deliveryOptionId);
       serverIdMap.current.set(localId, row.id);
 
       const existing = itemsRef.current.find((i) => i.id === localId);
@@ -81,6 +103,7 @@ function CartServerMerge() {
             id: row.id,
             product_id: row.product_id,
             variation_id: variationId,
+            delivery_option_id: deliveryOptionId,
             quantity: merged,
           });
         }
@@ -94,10 +117,14 @@ function CartServerMerge() {
       const variant = variationId
         ? templateProduct.variants.find((v) => v.id === variationId)
         : null;
+      // The delivery option this server row was added with (carries its own price/stock)
+      const deliveryOption = deliveryOptionId
+        ? (templateProduct.deliveryOptions || []).find((o) => o.id === deliveryOptionId) || null
+        : null;
 
       // Same shape ProductCard adds locally: flat string title, and none of
       // the heavy/object fields (rendering an {en: ...} title crashes the cart).
-      const { variants, categories, description, campaign: _c, ...slim } = templateProduct;
+      const { variants, deliveryOptions: _do, categories, description, campaign: _c, ...slim } = templateProduct;
       const title =
         typeof slim.title === "string"
           ? slim.title
@@ -114,8 +141,14 @@ function CartServerMerge() {
             ...slim,
             title,
             id: localId,
-            price: variant ? variant.price : templateProduct.prices.price,
+            price: deliveryOption
+              ? deliveryOption.price
+              : variant
+                ? variant.price
+                : templateProduct.prices.price,
             variant: variant || null,
+            deliveryOption,
+            deliveryOptionId: deliveryOption?.id ?? deliveryOptionId,
           },
           row.quantity,
         );
@@ -202,18 +235,21 @@ export default function CartSyncProvider({ children }) {
   const onItemAdd = useCallback((item) => {
     const token = tokenRef.current;
     if (!token || mergingRef.current) return;
-    const { product_id, variation_id } = parseCartLine(item);
-    createServerCartItem(token, { product_id, variation_id, quantity: item.quantity }).then(
-      (row) => {
-        if (row?.id) serverIdMap.current.set(item.id, row.id);
-      },
-    );
+    const { product_id, variation_id, delivery_option_id } = parseCartLine(item);
+    createServerCartItem(token, {
+      product_id,
+      variation_id,
+      delivery_option_id,
+      quantity: item.quantity,
+    }).then((row) => {
+      if (row?.id) serverIdMap.current.set(item.id, row.id);
+    });
   }, []);
 
   const onItemUpdate = useCallback((item) => {
     const token = tokenRef.current;
     if (!token || mergingRef.current) return;
-    const { product_id, variation_id } = parseCartLine(item);
+    const { product_id, variation_id, delivery_option_id } = parseCartLine(item);
     const serverId = serverIdMap.current.get(item.id);
 
     if (serverId) {
@@ -224,26 +260,33 @@ export default function CartSyncProvider({ children }) {
         id: serverId,
         product_id,
         variation_id,
+        delivery_option_id,
         quantity: item.quantity,
       }).then((result) => {
         // The mapped row no longer exists for this account (stale id) —
         // recreate the line with the current absolute quantity.
         if (result !== "missing") return;
         serverIdMap.current.delete(item.id);
-        createServerCartItem(token, { product_id, variation_id, quantity: item.quantity }).then(
-          (row) => {
-            if (row?.id) serverIdMap.current.set(item.id, row.id);
-          },
-        );
+        createServerCartItem(token, {
+          product_id,
+          variation_id,
+          delivery_option_id,
+          quantity: item.quantity,
+        }).then((row) => {
+          if (row?.id) serverIdMap.current.set(item.id, row.id);
+        });
       });
     } else {
       // Line was added while signed out and hasn't been through the login
       // merge yet — create it now with the current absolute quantity.
-      createServerCartItem(token, { product_id, variation_id, quantity: item.quantity }).then(
-        (row) => {
-          if (row?.id) serverIdMap.current.set(item.id, row.id);
-        },
-      );
+      createServerCartItem(token, {
+        product_id,
+        variation_id,
+        delivery_option_id,
+        quantity: item.quantity,
+      }).then((row) => {
+        if (row?.id) serverIdMap.current.set(item.id, row.id);
+      });
     }
   }, []);
 

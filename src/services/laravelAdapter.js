@@ -194,6 +194,27 @@ export function toTemplateProduct(p) {
     }))
     .filter((attr) => attr.values.length > 0);
 
+  // Delivery options: one product sold at several prices for different delivery times
+  // (admin-named, e.g. "Fastest Delivery" / "Best Price"). The product's own price is already the
+  // cheapest option; the customer must pick one on the product page.
+  const deliveryOptions = (Array.isArray(p.delivery_options) ? p.delivery_options : []).map((o) => {
+    const regular = num(o.price);
+    const sale = num(o.sale_price);
+    const effective = sale > 0 && sale < regular ? sale : regular;
+    const qty = Number(o.quantity) || 0;
+    return {
+      id: o.id,
+      label: o.label,
+      deliveryText: o.delivery_text || "",
+      deliveryDays: o.delivery_days ?? null,
+      price: effective,
+      originalPrice: regular,
+      stock: (o.stock_status ?? "in_stock") === "in_stock" ? qty : 0,
+      stockStatus: o.stock_status ?? "in_stock",
+      isDefault: !!o.is_default,
+    };
+  });
+
   return {
     _id: String(p.id),
     id: p.id,
@@ -224,6 +245,8 @@ export function toTemplateProduct(p) {
     isCombination: variants.length > 0,
     variants,
     variantAttributes,
+    deliveryOptions,
+    hasDeliveryOptions: deliveryOptions.length > 0,
     status: p.status === 0 ? "hide" : "show",
 
     // Top-level fields several shared components (Rating, etc.) read directly.

@@ -39,6 +39,8 @@ export function toLaravelProducts(cartItems) {
       variation_id: item.variant?.id ?? item.variation_id ?? null,
       selected_attribute_ids: attributeIds.length ? attributeIds : null,
       variation_display_name: item.variant?.name ?? item.variation_display_name ?? null,
+      // Delivery option chosen on the product page (the API prices it and snapshots it on the order line)
+      delivery_option_id: item.deliveryOptionId ?? item.deliveryOption?.id ?? null,
       quantity: Number(item.quantity || 1),
       price: Number(item.price || 0),
       item_shipping_method: item.item_shipping_method ?? "standard",
@@ -158,8 +160,15 @@ export function toTemplateOrderDetail(order) {
   const cart = (order.products || []).map((p) => {
     const quantity = Number(p.pivot?.quantity || 0);
     const price = Number(p.pivot?.single_price ?? p.pivot?.product_price ?? 0);
+    const optLabel = p.pivot?.delivery_option_label;
+    const optText = p.pivot?.delivery_option_text;
+    const baseTitle = p.pivot?.product_name || p.name;
     return {
-      title: p.pivot?.product_name || p.name,
+      // The chosen delivery option is appended so every order table / invoice that prints `title`
+      // also shows it (e.g. "Fridge (Fastest Delivery · 2-3 days)").
+      title: optLabel ? `${baseTitle} (${optLabel}${optText ? ` · ${optText}` : ""})` : baseTitle,
+      deliveryOptionLabel: optLabel || null,
+      deliveryOptionText: optText || null,
       quantity,
       price,
       // OrderTable.jsx's "Amount" column reads itemTotal directly — without

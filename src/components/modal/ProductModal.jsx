@@ -39,6 +39,7 @@ const ProductModal = ({
     originalPrice,
     isFromPrice,
     requiresVariant,
+    requiresDeliveryOption,
     category_name,
     isInCampaign,
     campaign,
@@ -139,8 +140,8 @@ const ProductModal = ({
               </div>
             )}
 
-            {requiresVariant ? (
-              // Variant products can't be picked/added from the quick-view
+            {requiresVariant || requiresDeliveryOption ? (
+              // Variant / delivery-option products can't be picked/added from the quick-view
               // modal — send the user to the product page to choose options.
               <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-stretch">
                 <Link

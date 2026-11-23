@@ -52,7 +52,7 @@ const CampaignProductCard = ({ campaignProduct, campaignId, attributes }) => {
     if (isOutOfStock) return notifyError("This deal is sold out!");
     if (p.stock < 1) return notifyError("Insufficient stock!");
 
-    if (p?.variants?.length > 0) {
+    if (p?.variants?.length > 0 || p?.deliveryOptions?.length > 0) {
       setModalOpen(!modalOpen);
       return;
     }

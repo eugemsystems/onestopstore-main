@@ -46,6 +46,12 @@ const CartItem = ({ item }) => {
             >
               {title}
             </Link>
+            {item.deliveryOption?.label && (
+              <div className="mb-0.5 text-xs font-medium text-cyan-700 dark:text-cyan-300">
+                {item.deliveryOption.label}
+                {item.deliveryOption.deliveryText ? ` · ${item.deliveryOption.deliveryText}` : ""}
+              </div>
+            )}
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
               <span>Item Price {formatPrice(item.price)}</span>
               {hasDiscount && (

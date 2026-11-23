@@ -32,6 +32,7 @@ import ProductLink from "@components/common/ProductLink";
 import ProductVariantIndicator from "@components/product/ProductVariantIndicator";
 import ProductCardMeta from "@components/product/ProductCardMeta";
 import { getFromPrice } from "@utils/getFromPrice";
+import MoreOptionsBadge from "@components/product/MoreOptionsBadge";
 import { canAddToCart } from "@utils/cartGuards";
 
 const DiscountedCard = ({ product, attributes }) => {
@@ -67,7 +68,7 @@ const DiscountedCard = ({ product, attributes }) => {
       : p.stock;
     if (stockToCheck < 1) return notifyError("Insufficient stock!");
 
-    if (p?.variants?.length > 0) {
+    if (p?.variants?.length > 0 || p?.deliveryOptions?.length > 0) {
       setModalOpen(!modalOpen);
       return;
     }
@@ -292,6 +293,11 @@ const DiscountedCard = ({ product, attributes }) => {
               }
               isFrom={!isInCampaign && fromPrice.isFrom}
             />
+            {product?.deliveryOptions?.length > 0 && (
+              <div className="mt-1">
+                <MoreOptionsBadge />
+              </div>
+            )}
           </div>
 
           {r.stockStatus && r.stockStatus !== "in_stock" && (

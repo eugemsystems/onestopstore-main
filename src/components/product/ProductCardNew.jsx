@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 
 // Internal imports
 import Price from "@components/common/Price";
+import MoreOptionsBadge from "@components/product/MoreOptionsBadge";
 import Stock from "@components/common/Stock";
 import { notifyError } from "@utils/toast";
 import Rating from "@components/common/Rating";
@@ -63,7 +64,7 @@ const ProductCardNew = ({ product, attributes }) => {
       : p.stock;
     if (stockToCheck < 1) return notifyError("Insufficient stock!");
 
-    if (p?.variants?.length > 0) {
+    if (p?.variants?.length > 0 || p?.deliveryOptions?.length > 0) {
       setModalOpen(true);
       return;
     }
@@ -228,6 +229,11 @@ const ProductCardNew = ({ product, attributes }) => {
                 originalPrice={originalPrice}
                 campaign={isInCampaign ? campaign : null}
               />
+              {product?.deliveryOptions?.length > 0 && (
+                <div className="mt-1">
+                  <MoreOptionsBadge />
+                </div>
+              )}
               {/* Campaign sold bar */}
               {isInCampaign && (
                 <div className="mt-1">

@@ -17,6 +17,7 @@ import DeliveryBadge from "@components/slug-card/DeliveryBadge";
 import Discount from "@components/common/Discount";
 import ProductCard from "@components/product/ProductCard";
 import VariantList from "@components/variants/VariantList";
+import DeliveryOptionList from "@components/product/DeliveryOptionList";
 import useUtilsFunction from "@hooks/useUtilsFunction";
 import ImageCarousel from "@components/carousel/ImageCarousel";
 import { useSetting } from "@context/SettingContext";
@@ -70,6 +71,11 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
     isValueAvailable,
     isVariantComplete,
     matchedVariant,
+    // delivery options
+    deliveryOptions,
+    requiresDeliveryOption,
+    selectedDeliveryOption,
+    selectDeliveryOption,
     category_name,
     category_display_name,
     // campaign state
@@ -323,6 +329,14 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                 </div>
               )}
 
+              {requiresDeliveryOption && (
+                <DeliveryOptionList
+                  options={deliveryOptions}
+                  selectedId={selectedDeliveryOption?.id ?? null}
+                  onSelect={selectDeliveryOption}
+                />
+              )}
+
               <div>
                 <div className="flex items-center gap-2 mt-4">
                   {/* Quantity Selector */}
@@ -358,12 +372,16 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                   <Button
                     onClick={() => handleAddToCart(item)}
                     disabled={
-                      !stock || stock < 1 || (requiresVariant && !isVariantComplete)
+                      !stock ||
+                      stock < 1 ||
+                      (requiresVariant && !isVariantComplete) ||
+                      (requiresDeliveryOption && !selectedDeliveryOption)
                     }
                     className="text-sm leading-4 inline-flex flex-1 min-w-0 items-center cursor-pointer transition ease-in-out duration-300 font-semibold text-center justify-center border-0 border-transparent rounded-md focus-visible:outline-none focus:outline-none px-3 sm:px-4 md:px-6 h-11 disabled:cursor-not-allowed disabled:opacity-60"
                     variant="create"
                   >
-                    {requiresVariant && !isVariantComplete
+                    {(requiresVariant && !isVariantComplete) ||
+                    (requiresDeliveryOption && !selectedDeliveryOption)
                       ? "Select Options"
                       : "Add to Cart"}
                   </Button>

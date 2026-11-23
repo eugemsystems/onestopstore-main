@@ -37,10 +37,25 @@ export default function useProductAction({
   const variantAttributes = product?.variantAttributes || [];
   const requiresVariant = variantAttributes.length > 0;
 
+  // Delivery options: one product, several prices by delivery time. The customer must pick one;
+  // the option's price/stock only apply once it is picked.
+  const deliveryOptions = product?.deliveryOptions || [];
+  const requiresDeliveryOption = deliveryOptions.length > 0;
+  const [selectedDeliveryOptionId, setSelectedDeliveryOptionId] = useState(null);
+  const selectedDeliveryOption =
+    deliveryOptions.find((o) => o.id === selectedDeliveryOptionId) || null;
+  const selectDeliveryOption = (optionId) => {
+    const opt = deliveryOptions.find((o) => o.id === optionId);
+    if (!opt || !(Number(opt.stock) > 0)) return;
+    setSelectedDeliveryOptionId(optionId);
+    setItem(1);
+  };
+
   // Reset the picker whenever the product changes (card grid, modal reopen, etc.)
   useEffect(() => {
     setSelectedValues({});
     setManualImage(null);
+    setSelectedDeliveryOptionId(null);
     setItem(1);
   }, [product?._id]);
 
@@ -102,7 +117,7 @@ export default function useProductAction({
   const baseOriginalPrice = requiresVariant
     ? (matchedVariant?.originalPrice ?? cheapestVariant?.originalPrice)
     : getNumber(product?.prices?.originalPrice);
-  const baseStock = requiresVariant ? matchedVariant?.stock ?? 0 : product?.stock;
+  let baseStock = requiresVariant ? matchedVariant?.stock ?? 0 : product?.stock;
   const baseImage = requiresVariant
     ? matchedVariant?.image || product?.image?.[0]
     : product?.image?.[0];
@@ -112,6 +127,23 @@ export default function useProductAction({
   let stock = baseStock;
   let discount = 0;
   let selectedImage = manualImage || baseImage;
+  let isFromOptionPrice = false;
+
+  // Delivery options override price/stock: the chosen option, or the cheapest one as a "From"
+  // teaser until the customer picks (add to cart stays gated on the selection below).
+  if (requiresDeliveryOption) {
+    if (selectedDeliveryOption) {
+      price = selectedDeliveryOption.price;
+      originalPrice = selectedDeliveryOption.originalPrice;
+      stock = selectedDeliveryOption.stock;
+    } else {
+      const from = getFromPrice(product);
+      price = from.price;
+      originalPrice = from.originalPrice;
+      stock = product?.stock; // keep the page usable; the add button is gated on a selection
+      isFromOptionPrice = true;
+    }
+  }
 
   if (isInCampaign) {
     price = getNumber(campaign.campaignPrice);
@@ -126,6 +158,9 @@ export default function useProductAction({
   const handleAddToCart = (quantityArg) => {
     const quantity = typeof quantityArg === "number" ? quantityArg : item;
 
+    if (requiresDeliveryOption && !selectedDeliveryOption) {
+      return notifyError("Please choose a delivery option first");
+    }
     if (requiresVariant && !isVariantComplete) {
       return notifyError("Please select all options first!");
     }
@@ -143,6 +178,7 @@ export default function useProductAction({
     const {
       variants,
       variantAttributes: _va,
+      deliveryOptions: _do,
       categories,
       description,
       campaign: _camp,
@@ -151,10 +187,16 @@ export default function useProductAction({
 
     const newItem = {
       ...updatedProduct,
-      id: matchedVariant ? `${product._id}-${matchedVariant.id}` : product._id,
+      // Cart line identity: product [+ variation] [+ delivery option]. Different delivery options of
+      // the same product are separate lines (see parseCartLine in CartSyncProvider).
+      id:
+        (matchedVariant ? `${product._id}-${matchedVariant.id}` : String(product._id)) +
+        (selectedDeliveryOption ? `-d${selectedDeliveryOption.id}` : ""),
       title: matchedVariant
         ? `${showingTranslateValue(product.title)} - ${selectedValueNames.join(", ")}`
         : showingTranslateValue(product.title),
+      deliveryOption: selectedDeliveryOption || null,
+      deliveryOptionId: selectedDeliveryOption?.id ?? null,
       image: selectedImage,
       variant: matchedVariant || null,
       price: getNumber(price),
@@ -203,12 +245,18 @@ export default function useProductAction({
     isVariantComplete,
     matchedVariant,
 
+    // delivery options
+    deliveryOptions,
+    requiresDeliveryOption,
+    selectedDeliveryOption,
+    selectDeliveryOption,
+
     // derived pricing/stock
     price,
     stock,
     discount,
     originalPrice,
-    isFromPrice,
+    isFromPrice: isFromPrice || isFromOptionPrice,
     selectedImage,
     setSelectedImage: setManualImage,
 

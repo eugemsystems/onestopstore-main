@@ -241,6 +241,9 @@ const OrderDetailView = ({ orderId, order, error, paymentMethods, statusParam })
             price: unit,
             itemTotal: Number(p?.pivot?.subtotal ?? qty * unit),
             variation: p?.pivot?.variation_display_name || p?.variation_display_name || "",
+            deliveryOption: p?.pivot?.delivery_option_label
+              ? `${p.pivot.delivery_option_label}${p.pivot.delivery_option_text ? ` · ${p.pivot.delivery_option_text}` : ""}`
+              : "",
             itemStatus: p?.pivot?.item_status || "",
             isReturnable: p?.pivot?.is_return ?? p?.is_return ?? p?.returnable ?? true,
             warranty: p?.warranty || "",
@@ -250,6 +253,9 @@ const OrderDetailView = ({ orderId, order, error, paymentMethods, statusParam })
           ...c,
           productId: c?.id,
           variation: "",
+          deliveryOption: c?.deliveryOptionLabel
+            ? `${c.deliveryOptionLabel}${c.deliveryOptionText ? ` · ${c.deliveryOptionText}` : ""}`
+            : "",
           itemStatus: "",
           isReturnable: true,
           warranty: "",
@@ -381,6 +387,11 @@ const OrderDetailView = ({ orderId, order, error, paymentMethods, statusParam })
                     <p className="font-medium text-foreground line-clamp-1">{item.title}</p>
                     {item.variation && (
                       <p className="text-xs text-muted-foreground mt-0.5">{item.variation}</p>
+                    )}
+                    {item.deliveryOption && (
+                      <p className="text-xs font-medium text-cyan-700 dark:text-cyan-300 mt-0.5">
+                        {item.deliveryOption}
+                      </p>
                     )}
                     <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                       <span>Qty: {item.quantity}</span>

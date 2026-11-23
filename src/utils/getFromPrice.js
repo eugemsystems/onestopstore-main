@@ -4,6 +4,15 @@
  * legacy frontend's getMinVariationPrice()/getDisplayPrice() behavior.
  */
 export const getFromPrice = (product) => {
+  // Delivery options win: show the cheapest (in-stock) option as "From"
+  const options = product?.deliveryOptions;
+  if (Array.isArray(options) && options.length > 0) {
+    const inStock = options.filter((o) => Number(o?.stock) > 0);
+    const pool = inStock.length ? inStock : options;
+    const cheapest = pool.reduce((min, o) => (Number(o.price) < Number(min.price) ? o : min), pool[0]);
+    return { price: cheapest.price, originalPrice: cheapest.originalPrice, isFrom: true };
+  }
+
   const variants = product?.variants;
   if (!Array.isArray(variants) || variants.length === 0) {
     return {

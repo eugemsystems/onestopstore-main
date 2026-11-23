@@ -43,12 +43,17 @@ export async function fetchServerCart(token) {
 }
 
 /** POST /cart — creates a new line, or ADDS quantity to an existing one. Returns the created/updated row, or null. */
-export async function createServerCartItem(token, { product_id, variation_id, quantity }) {
+export async function createServerCartItem(token, { product_id, variation_id, delivery_option_id, quantity }) {
   try {
     const res = await fetch(`${API_BASE}/cart`, {
       method: "POST",
       headers: jsonHeaders(token),
-      body: JSON.stringify({ product_id, variation_id: variation_id ?? null, quantity }),
+      body: JSON.stringify({
+        product_id,
+        variation_id: variation_id ?? null,
+        ...(delivery_option_id ? { delivery_option_id } : {}),
+        quantity,
+      }),
     });
     if (!res.ok) return null;
     const payload = await res.json();
@@ -59,12 +64,18 @@ export async function createServerCartItem(token, { product_id, variation_id, qu
 }
 
 /** PUT /replace/cart — sets an existing line's quantity absolutely (does NOT add). */
-export async function replaceServerCartItem(token, { id, product_id, variation_id, quantity }) {
+export async function replaceServerCartItem(token, { id, product_id, variation_id, delivery_option_id, quantity }) {
   try {
     const res = await fetch(`${API_BASE}/replace/cart`, {
       method: "PUT",
       headers: jsonHeaders(token),
-      body: JSON.stringify({ id, product_id, variation_id: variation_id ?? null, quantity }),
+      body: JSON.stringify({
+        id,
+        product_id,
+        variation_id: variation_id ?? null,
+        ...(delivery_option_id ? { delivery_option_id } : {}),
+        quantity,
+      }),
     });
     if (res.status === 404) return "missing";
     return res.ok;

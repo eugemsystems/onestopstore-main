@@ -35,9 +35,10 @@ const buildTotalsPayload = (orderInfo, products) => ({
   points_amount: orderInfo?.points_amount ? 1 : 0,
   wallet_balance: orderInfo?.wallet_balance ? 1 : 0,
   note: orderInfo?.note ? String(orderInfo.note) : "",
-  products: products.map(({ product_id, variation_id, quantity }) => ({
+  products: products.map(({ product_id, variation_id, delivery_option_id, quantity }) => ({
     product_id,
     variation_id,
+    ...(delivery_option_id ? { delivery_option_id } : {}),
     quantity,
   })),
 });

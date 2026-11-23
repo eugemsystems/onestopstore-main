@@ -18,6 +18,10 @@ const useAddToCart = () => {
     if (product?.inCampaign && product?.campaignRemainingStock != null) {
       return product.campaignRemainingStock;
     }
+    // A chosen delivery option carries its own stock
+    if (product?.deliveryOption) {
+      return product.deliveryOption.stock;
+    }
     return product?.variants?.length > 0
       ? product?.variant?.quantity
       : product?.stock;
@@ -26,7 +30,7 @@ const useAddToCart = () => {
   const handleAddItem = (product, quantity) => {
     const qty = quantity || item;
     const result = items.find((i) => i.id === product.id);
-    const { variants, categories, description, campaign, ...updatedProduct } =
+    const { variants, deliveryOptions, categories, description, campaign, ...updatedProduct } =
       product;
 
     if (!result) {
