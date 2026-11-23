@@ -51,7 +51,7 @@ function CartServerMerge() {
   const { data: session } = useSession();
   const token = session?.user?.token;
   const { items, addItem, updateItemQuantity } = useCart();
-  const serverIdMap = useContext(ServerIdMapContext);
+  const { serverIdMap, mergingRef } = useContext(ServerIdMapContext);
 
   const itemsRef = useRef(items);
   itemsRef.current = items;
@@ -103,18 +103,27 @@ function CartServerMerge() {
           ? slim.title
           : slim.title?.en || Object.values(slim.title || {})[0] || row.product.name || "";
 
-      addItem(
-        {
-          ...slim,
-          title,
-          id: localId,
-          price: variant ? variant.price : templateProduct.prices.price,
-          variant: variant || null,
-        },
-        row.quantity,
-      );
+      // This line already exists on the server. addItem fires onItemAdd
+      // (synchronously), which would POST /cart and ADD row.quantity on top of
+      // the server's — doubling the quantity on every page refresh. Suppress
+      // the mirror for this pull-originated add.
+      mergingRef.current = true;
+      try {
+        addItem(
+          {
+            ...slim,
+            title,
+            id: localId,
+            price: variant ? variant.price : templateProduct.prices.price,
+            variant: variant || null,
+          },
+          row.quantity,
+        );
+      } finally {
+        mergingRef.current = false;
+      }
     }
-  }, [token, addItem, updateItemQuantity, serverIdMap]);
+  }, [token, addItem, updateItemQuantity, serverIdMap, mergingRef]);
 
   // Pull on mount and whenever the session goes from signed-out to signed-in.
   useEffect(() => {
@@ -187,9 +196,12 @@ export default function CartSyncProvider({ children }) {
 
   const serverIdMap = useRef(new Map());
 
+  const mergingRef = useRef(false);
+  const ctxValue = useRef({ serverIdMap, mergingRef }).current;
+
   const onItemAdd = useCallback((item) => {
     const token = tokenRef.current;
-    if (!token) return;
+    if (!token || mergingRef.current) return;
     const { product_id, variation_id } = parseCartLine(item);
     createServerCartItem(token, { product_id, variation_id, quantity: item.quantity }).then(
       (row) => {
@@ -200,7 +212,7 @@ export default function CartSyncProvider({ children }) {
 
   const onItemUpdate = useCallback((item) => {
     const token = tokenRef.current;
-    if (!token) return;
+    if (!token || mergingRef.current) return;
     const { product_id, variation_id } = parseCartLine(item);
     const serverId = serverIdMap.current.get(item.id);
 
@@ -251,7 +263,7 @@ export default function CartSyncProvider({ children }) {
   }, []);
 
   return (
-    <ServerIdMapContext.Provider value={serverIdMap}>
+    <ServerIdMapContext.Provider value={ctxValue}>
       <CartProvider
         onItemAdd={onItemAdd}
         onItemUpdate={onItemUpdate}
