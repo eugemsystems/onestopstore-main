@@ -2,12 +2,13 @@
 
 import useUtilsFunction from "@hooks/useUtilsFunction";
 
-const Price = ({ product, price, card, originalPrice, currency, campaign, isFrom }) => {
+const Price = ({ product, price, card, originalPrice, currency, campaign, isFrom, usePropPrice }) => {
   const { formatPrice } = useUtilsFunction();
 
   // When campaign data is present, always use the passed price/originalPrice directly
   const isCombo = product?.isCombination;
-  const finalPrice = campaign
+  // usePropPrice: delivery-option products on the detail page, where `price` is the chosen option's
+  const finalPrice = campaign || usePropPrice
     ? price
     : isCombo
       ? price

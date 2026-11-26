@@ -127,6 +127,7 @@ const ProductModal = ({
                 originalPrice={originalPrice}
                 campaign={isInCampaign ? campaign : null}
                 isFrom={isFromPrice}
+                usePropPrice={requiresDeliveryOption}
               />
               <Discount slug product={product} discount={discount} />
             </div>

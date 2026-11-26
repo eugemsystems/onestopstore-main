@@ -51,7 +51,6 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
   const { globalSetting, storeCustomization } = useSetting();
   const { showingTranslateValue, formatPrice } = useUtilsFunction();
   const hasShippingLine = product?.raines?.standardShippingPrice != null;
-  const deliveryText = product?.raines?.estimatedDeliveryText || null;
   const {
     item,
     setItem,
@@ -87,6 +86,12 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
     product,
     globalSetting,
   });
+
+  // The chosen delivery option's own delivery time wins over the product-level text
+  const deliveryText =
+    selectedDeliveryOption?.deliveryText ||
+    product?.raines?.estimatedDeliveryText ||
+    null;
 
   const [zoomOpen, setZoomOpen] = useState(false);
   const images = product?.image || [];
@@ -276,6 +281,7 @@ const ProductScreen = ({ product, reviews, relatedProducts }) => {
                   originalPrice={originalPrice}
                   campaign={isInCampaign ? campaign : null}
                   isFrom={isFromPrice}
+                  usePropPrice={requiresDeliveryOption}
                 />
                 <span className="ml-2 block">
                   <Discount slug product={product} discount={discount} />
